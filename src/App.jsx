@@ -195,7 +195,18 @@ export default function App() {
       </header>
 
       {/* ---------- Hero ---------- */}
-      <section style={{ position: "relative", overflow: "hidden", background: `radial-gradient(ellipse at 20% -10%, #123F4C 0%, ${C.deep} 55%, ${C.deepDark} 100%)`, color: C.cream, padding: "64px 20px 76px" }}>
+      <section
+        style={{
+          position: "relative",
+          overflow: "hidden",
+          backgroundImage: `linear-gradient(90deg, rgba(3,16,32,0.92) 0%, rgba(4,25,45,0.72) 42%, rgba(3,16,32,0.25) 100%), url("/betta-fish.jpg")`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          color: C.cream,
+          padding: "64px 20px 76px",
+          minHeight: 560,
+        }}
+      >
         <div className="bubble" style={{ width: 14, height: 14, top: "18%", left: "6%", animationDelay: "0s" }} />
         <div className="bubble" style={{ width: 9, height: 9, top: "62%", left: "11%", animationDelay: "1.2s" }} />
         <div className="bubble" style={{ width: 20, height: 20, top: "30%", left: "3%", animationDelay: "2.4s" }} />
@@ -244,7 +255,7 @@ export default function App() {
               {["aquariums", "soft-toys", "pots", "resin"].map((c) => {
                 const Icon = CAT_META[c].icon;
                 return (
-                  <div key={c} style={{ background: "rgba(255,255,255,0.06)", border: `1px solid rgba(191,232,224,0.18)`, borderRadius: 4, padding: 16 }}>
+                  <div key={c} style={{ background: "rgba(5,22,40,0.52)", border: `1px solid rgba(191,232,224,0.22)`, backdropFilter: "blur(8px)", borderRadius: 4, padding: 16 }}>
                     <Icon size={20} color={C.tealLight} />
                     <div className="sg" style={{ marginTop: 10, fontWeight: 600, fontSize: 14.5, textTransform: "capitalize" }}>
                       {c.replace("-", " ")}
