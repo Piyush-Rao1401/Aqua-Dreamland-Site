@@ -88,7 +88,6 @@ function ProductArt({ cat }) {
       style={{
         background: grad,
         aspectRatio: "4/3",
-        borderRadius: 4,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -96,7 +95,9 @@ function ProductArt({ cat }) {
         overflow: "hidden",
       }}
     >
-      <Icon size={34} color="rgba(255,255,255,0.85)" strokeWidth={1.4} />
+      <div style={{ position: "absolute", width: 70, height: 70, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.18)", top: -20, right: -20 }} />
+      <div style={{ position: "absolute", width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.14)", bottom: -12, left: -12 }} />
+      <Icon className="prodart-icon" size={34} color="rgba(255,255,255,0.9)" strokeWidth={1.4} />
     </div>
   );
 }
@@ -151,10 +152,22 @@ export default function App() {
         .sg { font-family: 'Space Grotesk', sans-serif; }
         button { cursor: pointer; font-family: inherit; }
         .catbtn { transition: background .15s ease, color .15s ease; }
-        .prodcard { transition: transform .18s ease, box-shadow .18s ease; }
-        .prodcard:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(10,46,56,0.12); }
-        .addbtn { transition: background .15s ease; }
+        .prodcard { transition: transform .22s ease, box-shadow .22s ease; }
+        .prodcard:hover { transform: translateY(-5px); box-shadow: 0 16px 32px rgba(10,46,56,0.16); }
+        .prodcard:hover .prodart-icon { transform: scale(1.12) rotate(-4deg); }
+        .prodart-icon { transition: transform .3s ease; }
+        .addbtn { transition: background .15s ease, transform .15s ease; }
+        .addbtn:hover { transform: translateY(-1px); }
+        .catbtn:hover { border-color: ${C.teal} !important; }
         input:focus, textarea:focus { outline: 2px solid ${C.teal}; outline-offset: 1px; }
+        @keyframes floatBubble {
+          0%   { transform: translateY(0) translateX(0); opacity: 0.5; }
+          50%  { transform: translateY(-22px) translateX(6px); opacity: 0.9; }
+          100% { transform: translateY(0) translateX(0); opacity: 0.5; }
+        }
+        .bubble { position: absolute; border-radius: 50%; background: rgba(191,232,224,0.35); animation: floatBubble 6s ease-in-out infinite; pointer-events: none; }
+        .heroUnderline { position: relative; display: inline-block; }
+        .heroUnderline svg { position: absolute; left: 0; bottom: -6px; width: 100%; height: 10px; }
       `}</style>
 
       {/* ---------- Header ---------- */}
@@ -169,7 +182,7 @@ export default function App() {
             <button
               onClick={openCart}
               style={{
-                background: C.teal, color: C.deepDark, border: "none", borderRadius: 3,
+                background: C.teal, color: C.deepDark, border: "none", borderRadius: 8,
                 padding: "9px 14px", display: "flex", alignItems: "center", gap: 8, fontWeight: 600, fontSize: 14
               }}
               className="addbtn"
@@ -182,14 +195,26 @@ export default function App() {
       </header>
 
       {/* ---------- Hero ---------- */}
-      <section style={{ background: `radial-gradient(ellipse at 20% -10%, #123F4C 0%, ${C.deep} 55%, ${C.deepDark} 100%)`, color: C.cream, padding: "64px 20px 56px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", flexWrap: "wrap", gap: 40, alignItems: "center" }}>
+      <section style={{ position: "relative", overflow: "hidden", background: `radial-gradient(ellipse at 20% -10%, #123F4C 0%, ${C.deep} 55%, ${C.deepDark} 100%)`, color: C.cream, padding: "64px 20px 76px" }}>
+        <div className="bubble" style={{ width: 14, height: 14, top: "18%", left: "6%", animationDelay: "0s" }} />
+        <div className="bubble" style={{ width: 9, height: 9, top: "62%", left: "11%", animationDelay: "1.2s" }} />
+        <div className="bubble" style={{ width: 20, height: 20, top: "30%", left: "3%", animationDelay: "2.4s" }} />
+        <div className="bubble" style={{ width: 12, height: 12, top: "75%", right: "8%", animationDelay: "0.8s" }} />
+        <div className="bubble" style={{ width: 24, height: 24, top: "12%", right: "14%", animationDelay: "1.8s" }} />
+        <div className="bubble" style={{ width: 8, height: 8, top: "45%", right: "4%", animationDelay: "3s" }} />
+
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", flexWrap: "wrap", gap: 40, alignItems: "center", position: "relative" }}>
           <div style={{ flex: "1 1 420px" }}>
-            <p style={{ color: C.tealLight, fontWeight: 500, fontSize: 14, marginBottom: 14 }}>
+            <p style={{ color: C.tealLight, fontWeight: 500, fontSize: 14, marginBottom: 14, letterSpacing: "0.02em" }}>
               Aquariums · Soft Toys · Pots · Resin Décor
             </p>
-            <h1 className="sg" style={{ fontSize: "clamp(32px, 5vw, 48px)", lineHeight: 1.08, margin: 0, fontWeight: 700 }}>
-              Everything for your tank,<br />and everything around it.
+            <h1 className="sg" style={{ fontSize: "clamp(32px, 5vw, 48px)", lineHeight: 1.1, margin: 0, fontWeight: 700 }}>
+              Everything for your{" "}
+              <span className="heroUnderline">
+                tank
+                <svg viewBox="0 0 120 10" preserveAspectRatio="none"><path d="M0,6 Q30,0 60,6 T120,6" fill="none" stroke={C.clay} strokeWidth="3" strokeLinecap="round" /></svg>
+              </span>
+              ,<br />and everything around it.
             </h1>
             <p style={{ marginTop: 18, fontSize: 16.5, lineHeight: 1.6, color: "#CFE3E0", maxWidth: 480 }}>
               From a first 1-foot starter tank to a fully fitted 3-footer — plus the soft toys,
@@ -199,13 +224,13 @@ export default function App() {
               <button
                 onClick={() => { setActiveCat("aquariums"); document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" }); }}
                 className="addbtn"
-                style={{ background: C.clay, color: C.cream, border: "none", borderRadius: 3, padding: "12px 20px", fontWeight: 600, fontSize: 15 }}
+                style={{ background: C.clay, color: C.cream, border: "none", borderRadius: 8, padding: "12px 20px", fontWeight: 600, fontSize: 15 }}
               >
                 Shop Aquariums
               </button>
               <button
                 onClick={() => document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" })}
-                style={{ background: "transparent", color: C.cream, border: `1px solid ${C.teal}`, borderRadius: 3, padding: "12px 20px", fontWeight: 600, fontSize: 15 }}
+                style={{ background: "transparent", color: C.cream, border: `1px solid ${C.teal}`, borderRadius: 8, padding: "12px 20px", fontWeight: 600, fontSize: 15 }}
               >
                 Browse All Products
               </button>
@@ -228,6 +253,31 @@ export default function App() {
             </div>
           </div>
         </div>
+
+        <svg viewBox="0 0 1200 40" preserveAspectRatio="none" style={{ position: "absolute", bottom: -1, left: 0, width: "100%", height: 40, display: "block" }}>
+          <path d="M0,20 C150,45 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill={C.cream} />
+        </svg>
+      </section>
+
+      {/* ---------- Trust strip ---------- */}
+      <section style={{ background: C.cream, padding: "6px 20px 34px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14 }}>
+          {[
+            { icon: Fish, title: "Built in-house", sub: "Tanks glazed and fitted by hand" },
+            { icon: Heart, title: "Picked with care", sub: "Every toy and piece hand-selected" },
+            { icon: MapPin, title: "Shop it in person too", sub: "Visit the store, same range" },
+          ].map((f, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, background: "#fff", border: `1px solid ${C.sandDeep}`, borderRadius: 8, padding: "14px 16px" }}>
+              <div style={{ width: 38, height: 38, borderRadius: "50%", background: C.sand, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <f.icon size={17} color={C.clayDark} />
+              </div>
+              <div>
+                <div className="sg" style={{ fontSize: 14, fontWeight: 600 }}>{f.title}</div>
+                <div style={{ fontSize: 12, color: "#8A8578" }}>{f.sub}</div>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* ---------- Shop ---------- */}
@@ -244,10 +294,11 @@ export default function App() {
                   onClick={() => setActiveCat(c.id)}
                   style={{
                     display: "flex", alignItems: "center", gap: 7,
-                    background: active ? C.deep : "transparent",
+                    background: active ? C.deep : "#fff",
                     color: active ? C.cream : C.deep,
                     border: `1px solid ${active ? C.deep : C.sandDeep}`,
-                    borderRadius: 3, padding: "9px 15px", fontSize: 14, fontWeight: 500,
+                    borderRadius: 999, padding: "9px 16px", fontSize: 14, fontWeight: 500,
+                    boxShadow: active ? "0 6px 14px rgba(10,46,56,0.18)" : "none",
                   }}
                 >
                   <Icon size={15} />
@@ -262,7 +313,7 @@ export default function App() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search this category"
-              style={{ border: `1px solid ${C.sandDeep}`, borderRadius: 3, padding: "9px 12px 9px 32px", fontSize: 14, width: 210, background: "#fff" }}
+              style={{ border: `1px solid ${C.sandDeep}`, borderRadius: 8, padding: "9px 12px 9px 32px", fontSize: 14, width: 210, background: "#fff" }}
             />
           </div>
         </div>
@@ -273,7 +324,7 @@ export default function App() {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 18 }}>
           {filtered.map((p) => (
-            <div key={p.id} className="prodcard" style={{ background: "#fff", border: `1px solid ${C.sandDeep}`, borderRadius: 4, overflow: "hidden" }}>
+            <div key={p.id} className="prodcard" style={{ background: "#fff", border: `1px solid ${C.sandDeep}`, borderRadius: 10, overflow: "hidden" }}>
               <ProductArt cat={p.cat} />
               <div style={{ padding: 14 }}>
                 <div className="sg" style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.3 }}>{p.name}</div>
@@ -282,11 +333,11 @@ export default function App() {
                   <span className="sg" style={{ fontSize: 16.5, fontWeight: 700, color: C.clayDark }}>{priceLabel(p)}</span>
                   {cart[p.id] ? (
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <button onClick={() => changeQty(p.id, -1)} style={{ background: C.sand, border: "none", borderRadius: 3, width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <button onClick={() => changeQty(p.id, -1)} style={{ background: C.sand, border: "none", borderRadius: 8, width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <Minus size={13} />
                       </button>
                       <span style={{ fontSize: 14, fontWeight: 600, minWidth: 14, textAlign: "center" }}>{cart[p.id]}</span>
-                      <button onClick={() => changeQty(p.id, 1)} style={{ background: C.deep, border: "none", borderRadius: 3, width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <button onClick={() => changeQty(p.id, 1)} style={{ background: C.deep, border: "none", borderRadius: 8, width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <Plus size={13} color="#fff" />
                       </button>
                     </div>
@@ -294,7 +345,7 @@ export default function App() {
                     <button
                       className="addbtn"
                       onClick={() => addToCart(p.id)}
-                      style={{ background: C.deep, color: "#fff", border: "none", borderRadius: 3, padding: "7px 12px", fontSize: 13, fontWeight: 600 }}
+                      style={{ background: C.deep, color: "#fff", border: "none", borderRadius: 8, padding: "7px 12px", fontSize: 13, fontWeight: 600 }}
                     >
                       Add
                     </button>
@@ -349,11 +400,11 @@ export default function App() {
                           <div style={{ fontSize: 12.5, color: "#8A8578" }}>{priceLabel(i)} × {i.qty}</div>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                          <button onClick={() => changeQty(i.id, -1)} style={{ background: C.sand, border: "none", borderRadius: 3, width: 24, height: 24 }}>
+                          <button onClick={() => changeQty(i.id, -1)} style={{ background: C.sand, border: "none", borderRadius: 8, width: 24, height: 24 }}>
                             <Minus size={12} />
                           </button>
                           <span style={{ fontSize: 13.5, minWidth: 12, textAlign: "center" }}>{i.qty}</span>
-                          <button onClick={() => changeQty(i.id, 1)} style={{ background: C.deep, border: "none", borderRadius: 3, width: 24, height: 24 }}>
+                          <button onClick={() => changeQty(i.id, 1)} style={{ background: C.deep, border: "none", borderRadius: 8, width: 24, height: 24 }}>
                             <Plus size={12} color="#fff" />
                           </button>
                         </div>
@@ -368,17 +419,17 @@ export default function App() {
                   <label style={{ fontSize: 13, fontWeight: 600 }}>
                     Full name
                     <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      style={{ display: "block", width: "100%", marginTop: 5, padding: "10px 12px", border: `1px solid ${C.sandDeep}`, borderRadius: 3, fontSize: 14 }} />
+                      style={{ display: "block", width: "100%", marginTop: 5, padding: "10px 12px", border: `1px solid ${C.sandDeep}`, borderRadius: 8, fontSize: 14 }} />
                   </label>
                   <label style={{ fontSize: 13, fontWeight: 600 }}>
                     Phone number
                     <input required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      style={{ display: "block", width: "100%", marginTop: 5, padding: "10px 12px", border: `1px solid ${C.sandDeep}`, borderRadius: 3, fontSize: 14 }} />
+                      style={{ display: "block", width: "100%", marginTop: 5, padding: "10px 12px", border: `1px solid ${C.sandDeep}`, borderRadius: 8, fontSize: 14 }} />
                   </label>
                   <label style={{ fontSize: 13, fontWeight: 600 }}>
                     Delivery address
                     <textarea required rows={3} value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })}
-                      style={{ display: "block", width: "100%", marginTop: 5, padding: "10px 12px", border: `1px solid ${C.sandDeep}`, borderRadius: 3, fontSize: 14, resize: "vertical" }} />
+                      style={{ display: "block", width: "100%", marginTop: 5, padding: "10px 12px", border: `1px solid ${C.sandDeep}`, borderRadius: 8, fontSize: 14, resize: "vertical" }} />
                   </label>
                   <p style={{ fontSize: 12.5, color: "#8A8578", lineHeight: 1.5 }}>
                     This demo captures the full order flow. Once the site is live, this step hands off to a payment gateway (UPI/cards) for real transactions.
@@ -410,7 +461,7 @@ export default function App() {
                     className="addbtn"
                     style={{
                       width: "100%", background: cartItems.length ? C.clay : "#D8CFBC", color: "#fff", border: "none",
-                      borderRadius: 3, padding: "13px", fontWeight: 600, fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center", gap: 6
+                      borderRadius: 8, padding: "13px", fontWeight: 600, fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center", gap: 6
                     }}
                   >
                     Proceed to Checkout <ChevronRight size={16} />
@@ -420,7 +471,7 @@ export default function App() {
                     type="submit"
                     form="checkout-form"
                     className="addbtn"
-                    style={{ width: "100%", background: C.clay, color: "#fff", border: "none", borderRadius: 3, padding: "13px", fontWeight: 600, fontSize: 15 }}
+                    style={{ width: "100%", background: C.clay, color: "#fff", border: "none", borderRadius: 8, padding: "13px", fontWeight: 600, fontSize: 15 }}
                   >
                     Place Order
                   </button>
