@@ -7,14 +7,14 @@ import {
 // ---------- Design tokens ----------
 // Deep water navy, glass teal, sand, brick-clay accent — an aquarium-shop-meets-craft-market identity
 const C = {
-  deep: "#0A2E38",
-  deepDark: "#071F26",
-  teal: "#2F8F9E",
-  tealLight: "#BFE8E0",
+  deep: "#071A2B",
+  deepDark: "#030D18",
+  teal: "#39A8BE",
+  tealLight: "#C9F3EE",
   sand: "#F3EAD9",
   sandDeep: "#E8DBC2",
-  clay: "#BB5A3B",
-  clayDark: "#9C4830",
+  clay: "#C86645",
+  clayDark: "#A94F35",
   ink: "#132025",
   cream: "#FBF7EF",
 };
@@ -151,46 +151,66 @@ export default function App() {
         * { box-sizing: border-box; }
         .sg { font-family: 'Space Grotesk', sans-serif; }
         button { cursor: pointer; font-family: inherit; }
-        .catbtn { transition: background .15s ease, color .15s ease; }
-        .prodcard { transition: transform .22s ease, box-shadow .22s ease; }
-        .prodcard:hover { transform: translateY(-5px); box-shadow: 0 16px 32px rgba(10,46,56,0.16); }
+        .catbtn { transition: background .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease; }
+        .catbtn:hover { border-color: ${C.teal} !important; transform: translateY(-2px); }
+        .prodcard { transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+        .prodcard:hover { transform: translateY(-5px); box-shadow: 0 18px 38px rgba(4,24,42,0.16); border-color: rgba(57,168,190,0.45) !important; }
         .prodcard:hover .prodart-icon { transform: scale(1.12) rotate(-4deg); }
         .prodart-icon { transition: transform .3s ease; }
-        .addbtn { transition: background .15s ease, transform .15s ease; }
-        .addbtn:hover { transform: translateY(-1px); }
-        .catbtn:hover { border-color: ${C.teal} !important; }
+        .addbtn { transition: background .2s ease, transform .2s ease, box-shadow .2s ease; }
+        .addbtn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(200,102,69,0.24); }
         input:focus, textarea:focus { outline: 2px solid ${C.teal}; outline-offset: 1px; }
         @keyframes floatBubble {
-          0%   { transform: translateY(0) translateX(0); opacity: 0.5; }
-          50%  { transform: translateY(-22px) translateX(6px); opacity: 0.9; }
-          100% { transform: translateY(0) translateX(0); opacity: 0.5; }
+          0%   { transform: translateY(0) translateX(0); opacity: 0.28; }
+          50%  { transform: translateY(-22px) translateX(6px); opacity: 0.72; }
+          100% { transform: translateY(0) translateX(0); opacity: 0.28; }
         }
-        .bubble { position: absolute; border-radius: 50%; background: rgba(191,232,224,0.35); animation: floatBubble 6s ease-in-out infinite; pointer-events: none; }
+        @keyframes glowPulse {
+          0%, 100% { opacity: .45; transform: scale(1); }
+          50% { opacity: .75; transform: scale(1.06); }
+        }
+        @keyframes shimmer {
+          0% { transform: translateX(-120%); }
+          100% { transform: translateX(120%); }
+        }
+        .bubble { position: absolute; border-radius: 50%; background: rgba(201,243,238,0.35); animation: floatBubble 6s ease-in-out infinite; pointer-events: none; }
         .heroUnderline { position: relative; display: inline-block; }
         .heroUnderline svg { position: absolute; left: 0; bottom: -6px; width: 100%; height: 10px; }
+        .heroBadge { display:inline-flex; align-items:center; gap:8px; padding:7px 11px; border:1px solid rgba(201,243,238,.25); background:rgba(4,19,34,.42); border-radius:999px; backdrop-filter:blur(10px); box-shadow:0 8px 30px rgba(0,0,0,.12); }
+        .heroGridCard { position:relative; overflow:hidden; transition:transform .25s ease, border-color .25s ease, background .25s ease; }
+        .heroGridCard:hover { transform:translateY(-4px); border-color:rgba(201,243,238,.48) !important; background:rgba(7,26,43,.64) !important; }
+        .heroGridCard:after { content:""; position:absolute; left:0; top:0; width:42%; height:1px; background:linear-gradient(90deg, transparent, rgba(201,243,238,.75), transparent); animation:shimmer 4.5s ease-in-out infinite; }
+        .heroGlow { position:absolute; width:360px; height:360px; border-radius:50%; background:radial-gradient(circle, rgba(92,45,180,.22), transparent 68%); filter:blur(8px); animation:glowPulse 7s ease-in-out infinite; pointer-events:none; }
+        @media (max-width: 720px) {
+          .heroGrid { grid-template-columns: 1fr !important; }
+          .heroTitle { font-size: clamp(36px, 12vw, 54px) !important; }
+          .heroCopy { max-width: 100% !important; }
+        }
       `}</style>
 
       {/* ---------- Header ---------- */}
-      <header style={{ background: C.deep, color: C.cream, position: "sticky", top: 0, zIndex: 30 }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Waves size={22} color={C.tealLight} />
-            <span className="sg" style={{ fontSize: 21, fontWeight: 700, letterSpacing: "-0.01em" }}>Aqua Dreamland</span>
+      <header style={{ background: "rgba(3,13,24,0.88)", color: C.cream, position: "sticky", top: 0, zIndex: 30, backdropFilter: "blur(14px)", borderBottom: "1px solid rgba(201,243,238,0.10)" }}>
+        <div style={{ maxWidth: 1160, margin: "0 auto", padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 11, background: "rgba(57,168,190,0.14)", border: "1px solid rgba(201,243,238,0.16)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Waves size={21} color={C.tealLight} />
+            </div>
+            <div>
+              <span className="sg" style={{ display: "block", fontSize: 20, fontWeight: 700, letterSpacing: "-0.02em" }}>Aqua Dreamland</span>
+              <span style={{ display: "block", fontSize: 10.5, color: "#83A9A8", letterSpacing: "0.12em", textTransform: "uppercase", marginTop: 1 }}>Aquarium • Décor • More</span>
+            </div>
           </div>
-          <nav style={{ display: "flex", alignItems: "center", gap: 22 }}>
-            <div style={{ display: "none" }} />
-            <button
-              onClick={openCart}
-              style={{
-                background: C.teal, color: C.deepDark, border: "none", borderRadius: 8,
-                padding: "9px 14px", display: "flex", alignItems: "center", gap: 8, fontWeight: 600, fontSize: 14
-              }}
-              className="addbtn"
-            >
-              <ShoppingBag size={16} />
-              Cart {cartCount > 0 && `(${cartCount})`}
-            </button>
-          </nav>
+          <button
+            onClick={openCart}
+            style={{
+              background: "linear-gradient(135deg, #43B6C7, #2F8F9E)", color: C.deepDark, border: "1px solid rgba(201,243,238,.18)", borderRadius: 11,
+              padding: "10px 15px", display: "flex", alignItems: "center", gap: 8, fontWeight: 700, fontSize: 14, boxShadow: "0 8px 24px rgba(47,143,158,.18)"
+            }}
+            className="addbtn"
+          >
+            <ShoppingBag size={16} />
+            Cart {cartCount > 0 ? `· ${cartCount}` : ""}
+          </button>
         </div>
       </header>
 
@@ -199,14 +219,16 @@ export default function App() {
         style={{
           position: "relative",
           overflow: "hidden",
-          backgroundImage: `linear-gradient(90deg, rgba(3,16,32,0.92) 0%, rgba(4,25,45,0.72) 42%, rgba(3,16,32,0.25) 100%), url("/betta-fish.jpg")`,
+          backgroundImage: `linear-gradient(90deg, rgba(2,12,25,0.95) 0%, rgba(3,17,33,0.82) 35%, rgba(3,15,29,0.46) 66%, rgba(2,10,20,0.55) 100%), url("/betta-fish.jpg")`,
           backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundPosition: "center 44%",
           color: C.cream,
-          padding: "64px 20px 76px",
-          minHeight: 560,
+          padding: "72px 20px 88px",
+          minHeight: 620,
+          isolation: "isolate",
         }}
       >
+        <div className="heroGlow" style={{ top: -140, right: "12%" }} />
         <div className="bubble" style={{ width: 14, height: 14, top: "18%", left: "6%", animationDelay: "0s" }} />
         <div className="bubble" style={{ width: 9, height: 9, top: "62%", left: "11%", animationDelay: "1.2s" }} />
         <div className="bubble" style={{ width: 20, height: 20, top: "30%", left: "3%", animationDelay: "2.4s" }} />
@@ -214,53 +236,69 @@ export default function App() {
         <div className="bubble" style={{ width: 24, height: 24, top: "12%", right: "14%", animationDelay: "1.8s" }} />
         <div className="bubble" style={{ width: 8, height: 8, top: "45%", right: "4%", animationDelay: "3s" }} />
 
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", flexWrap: "wrap", gap: 40, alignItems: "center", position: "relative" }}>
-          <div style={{ flex: "1 1 420px" }}>
-            <p style={{ color: C.tealLight, fontWeight: 500, fontSize: 14, marginBottom: 14, letterSpacing: "0.02em" }}>
+        <div style={{ maxWidth: 1160, margin: "0 auto", display: "flex", flexWrap: "wrap", gap: 44, alignItems: "center", position: "relative", zIndex: 2 }}>
+          <div style={{ flex: "1 1 500px" }}>
+            <div className="heroBadge">
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#6EE7D4", boxShadow: "0 0 12px #6EE7D4" }} />
+              <span style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: C.tealLight }}>
+                Handpicked aquarium collection
+              </span>
+            </div>
+
+            <p style={{ color: "#A9D8D4", fontWeight: 600, fontSize: 14, margin: "18px 0 12px", letterSpacing: "0.02em" }}>
               Aquariums · Soft Toys · Pots · Resin Décor
             </p>
-            <h1 className="sg" style={{ fontSize: "clamp(32px, 5vw, 48px)", lineHeight: 1.1, margin: 0, fontWeight: 700 }}>
+
+            <h1 className="sg heroTitle" style={{ fontSize: "clamp(42px, 5.4vw, 68px)", lineHeight: 1.02, margin: 0, fontWeight: 700, letterSpacing: "-0.045em", maxWidth: 720 }}>
               Everything for your{" "}
-              <span style={{ whiteSpace: "nowrap" }}>
-                <span className="heroUnderline">
-                  tank
-                  <svg viewBox="0 0 120 10" preserveAspectRatio="none"><path d="M0,6 Q30,0 60,6 T120,6" fill="none" stroke={C.clay} strokeWidth="3" strokeLinecap="round" /></svg>
-                </span>
-                ,
+              <span className="heroUnderline">
+                tank
+                <svg viewBox="0 0 120 10" preserveAspectRatio="none"><path d="M0,6 Q30,0 60,6 T120,6" fill="none" stroke="#D17A5B" strokeWidth="3" strokeLinecap="round" /></svg>
               </span>
               {" "}and everything around it.
             </h1>
-            <p style={{ marginTop: 18, fontSize: 16.5, lineHeight: 1.6, color: "#CFE3E0", maxWidth: 480 }}>
+
+            <p className="heroCopy" style={{ marginTop: 22, fontSize: 17, lineHeight: 1.7, color: "#C9DCD9", maxWidth: 570 }}>
               From a first 1-foot starter tank to a fully fitted 3-footer — plus the soft toys,
               pots, and resin pieces that finish a room. Built and picked by hand.
             </p>
-            <div style={{ marginTop: 26, display: "flex", gap: 12, flexWrap: "wrap" }}>
+
+            <div style={{ marginTop: 28, display: "flex", gap: 12, flexWrap: "wrap" }}>
               <button
                 onClick={() => { setActiveCat("aquariums"); document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" }); }}
                 className="addbtn"
-                style={{ background: C.clay, color: C.cream, border: "none", borderRadius: 8, padding: "12px 20px", fontWeight: 600, fontSize: 15 }}
+                style={{ background: "linear-gradient(135deg, #D47652, #B9583D)", color: C.cream, border: "1px solid rgba(255,255,255,.10)", borderRadius: 11, padding: "13px 21px", fontWeight: 700, fontSize: 15 }}
               >
-                Shop Aquariums
+                Shop Aquariums <ChevronRight size={16} style={{ verticalAlign: "middle", marginLeft: 4 }} />
               </button>
               <button
                 onClick={() => document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" })}
-                style={{ background: "transparent", color: C.cream, border: `1px solid ${C.teal}`, borderRadius: 8, padding: "12px 20px", fontWeight: 600, fontSize: 15 }}
+                style={{ background: "rgba(3,16,31,.34)", color: C.cream, border: "1px solid rgba(201,243,238,.28)", borderRadius: 11, padding: "13px 21px", fontWeight: 700, fontSize: 15, backdropFilter: "blur(8px)" }}
               >
                 Browse All Products
               </button>
             </div>
+
+            <div style={{ display: "flex", gap: 22, flexWrap: "wrap", marginTop: 32, color: "#9DBBB8", fontSize: 12.5 }}>
+              <span><strong style={{ color: C.cream }}>1–3 ft</strong> aquarium sizes</span>
+              <span><strong style={{ color: C.cream }}>₹500+</strong> starting tanks</span>
+              <span><strong style={{ color: C.cream }}>Handpicked</strong> décor</span>
+            </div>
           </div>
-          <div style={{ flex: "1 1 320px", minWidth: 280 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+
+          <div style={{ flex: "1 1 390px", minWidth: 300 }}>
+            <div className="heroGrid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               {["aquariums", "soft-toys", "pots", "resin"].map((c) => {
                 const Icon = CAT_META[c].icon;
                 return (
-                  <div key={c} style={{ background: "rgba(5,22,40,0.52)", border: `1px solid rgba(191,232,224,0.22)`, backdropFilter: "blur(8px)", borderRadius: 4, padding: 16 }}>
-                    <Icon size={20} color={C.tealLight} />
-                    <div className="sg" style={{ marginTop: 10, fontWeight: 600, fontSize: 14.5, textTransform: "capitalize" }}>
+                  <div key={c} className="heroGridCard" style={{ background: "rgba(4,18,34,0.50)", border: "1px solid rgba(201,243,238,0.20)", borderRadius: 14, padding: 17, backdropFilter: "blur(12px)", boxShadow: "0 14px 40px rgba(0,0,0,.16)" }}>
+                    <div style={{ width: 34, height: 34, borderRadius: 10, background: "rgba(57,168,190,.13)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <Icon size={19} color={C.tealLight} />
+                    </div>
+                    <div className="sg" style={{ marginTop: 12, fontWeight: 700, fontSize: 15, textTransform: "capitalize" }}>
                       {c.replace("-", " ")}
                     </div>
-                    <div style={{ fontSize: 12.5, color: "#A9C6C2", marginTop: 4 }}>{CAT_META[c].blurb}</div>
+                    <div style={{ fontSize: 12.5, lineHeight: 1.45, color: "#A9C6C2", marginTop: 5 }}>{CAT_META[c].blurb}</div>
                   </div>
                 );
               })}
@@ -268,7 +306,8 @@ export default function App() {
           </div>
         </div>
 
-        <svg viewBox="0 0 1200 40" preserveAspectRatio="none" style={{ position: "absolute", bottom: -1, left: 0, width: "100%", height: 40, display: "block" }}>
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", background: "radial-gradient(circle at 72% 48%, rgba(100,65,210,.13), transparent 34%)" }} />
+        <svg viewBox="0 0 1200 40" preserveAspectRatio="none" style={{ position: "absolute", bottom: -1, left: 0, width: "100%", height: 40, display: "block", zIndex: 3 }}>
           <path d="M0,20 C150,45 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill={C.cream} />
         </svg>
       </section>
@@ -281,7 +320,7 @@ export default function App() {
             { icon: Heart, title: "Picked with care", sub: "Every toy and piece hand-selected" },
             { icon: MapPin, title: "Shop it in person too", sub: "Visit the store, same range" },
           ].map((f, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, background: "#fff", border: `1px solid ${C.sandDeep}`, borderRadius: 8, padding: "14px 16px" }}>
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, background: "#fff", border: `1px solid ${C.sandDeep}`, borderRadius: 12, padding: "15px 16px", boxShadow: "0 8px 24px rgba(10,46,56,0.05)" }}>
               <div style={{ width: 38, height: 38, borderRadius: "50%", background: C.sand, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 <f.icon size={17} color={C.clayDark} />
               </div>
