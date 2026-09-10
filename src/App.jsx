@@ -217,7 +217,7 @@ export default function App() {
                 </span>
                 ,
               </span>
-              <br />and everything around it.
+              {" "}and everything around it.
             </h1>
             <p style={{ marginTop: 18, fontSize: 16.5, lineHeight: 1.6, color: "#CFE3E0", maxWidth: 480 }}>
               From a first 1-foot starter tank to a fully fitted 3-footer — plus the soft toys,
