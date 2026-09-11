@@ -214,7 +214,7 @@ export default function App() {
   );
 }
 
-function ProductCard({ p, cart, addToCart, changeQty, justAdded }) 
+function ProductCard({ p, cart, addToCart, changeQty, justAdded }) {
   return <div className={`product-card ${justAdded === p.id ? "add-flash" : ""}`}><ProductArt cat={p.cat}/><div className="product-body">{p.badge && <span className="product-badge">{p.badge}</span>}<div className="product-name">{p.name}</div><div className="product-note">{p.note}</div><div className="product-row"><span className="price">{priceLabel(p)}</span>{justAdded === p.id ? <span className="product-badge" style={{margin:0,background:"#0ecb6b",color:"#fff"}}>✓ Added</span> : cart[p.id] ? <div className="qty"><button onClick={() => changeQty(p.id,-1)}><Minus size={12}/></button><span>{cart[p.id]}</span><button onClick={() => changeQty(p.id,1)}><Plus size={12}/></button></div> : <button className="add" onClick={() => addToCart(p.id)}>Add to cart</button>}</div></div></div>;
 }
 
