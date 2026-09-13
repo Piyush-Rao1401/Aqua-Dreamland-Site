@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import {
   ShoppingCart, X, Plus, Minus, Check, ChevronRight, Waves,
   Fish, Flower2, Gem, Heart, MapPin, Phone, Search, Sparkles,
-  ShieldCheck, Truck, Leaf, Menu, ArrowUpRight, MessageCircle
+  ShieldCheck, Truck, Leaf, Menu, ArrowUpRight, MessageCircle, Star
 } from "lucide-react";
 
 const C = {
@@ -51,6 +51,26 @@ const PRODUCTS = [
 const CAT_META = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
 const money = n => "₹" + n.toLocaleString("en-IN");
 const priceLabel = p => p.priceMax ? `${money(p.price)}–${money(p.priceMax)}` : p.priceFrom ? `From ${money(p.price)}` : money(p.price);
+const ratingFor = id => {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return { stars: 4 + (h % 10) / 10, count: 12 + (h % 88) };
+};
+
+function Reveal({ children, className = "" }) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setInView(true); obs.disconnect(); }
+    }, { threshold: 0.15 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return <div ref={ref} className={`reveal ${inView ? "in" : ""} ${className}`}>{children}</div>;
+}
 
 function ProductArt({ cat, compact = false }) {
   const Icon = CAT_META[cat].icon;
@@ -72,6 +92,13 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [mobileNav, setMobileNav] = useState(false);
   const [justAdded, setJustAdded] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 18);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const filtered = useMemo(() => {
     const list = PRODUCTS.filter(p => p.cat === activeCat);
@@ -94,7 +121,7 @@ export default function App() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
         *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:${C.cream};color:${C.ink};font-family:Manrope,sans-serif}.sg{font-family:'Space Grotesk',sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}.site{min-height:100vh;overflow:hidden}
-        .nav{position:sticky;top:0;z-index:40;background:rgba(3,15,27,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(164,238,238,.12);color:#fff}.nav-inner{max-width:1620px;margin:auto;padding:11px 24px;display:flex;align-items:center;gap:30px}.brand{display:flex;align-items:center;gap:11px;min-width:245px}.brand-mark{width:43px;height:43px;border-radius:13px;border:1px solid rgba(18,215,230,.6);display:grid;place-items:center;background:linear-gradient(145deg,rgba(18,215,230,.17),rgba(122,92,255,.08));box-shadow:0 0 24px rgba(18,215,230,.15)}.brand-name{font:700 22px 'Space Grotesk';letter-spacing:-.035em}.brand-sub{font-size:10px;color:#8fb2b4;letter-spacing:.14em;text-transform:uppercase;margin-top:2px}.navlinks{display:flex;align-items:center;gap:7px;flex:1;justify-content:center}.navlinks button{border:0;background:transparent;color:#c9dddd;padding:12px 13px;border-radius:10px;font-weight:600;font-size:14px;transition:.2s}.navlinks button:hover,.navlinks button.active{color:#fff;background:rgba(255,255,255,.05)}.navlinks button.active{box-shadow:inset 0 -2px ${C.aqua}}.cart-btn{border:1px solid rgba(18,215,230,.55);background:linear-gradient(135deg,#24b7cf,#2d91c5);color:#041321;border-radius:13px;padding:11px 16px;font-weight:800;display:flex;align-items:center;gap:8px;box-shadow:0 8px 28px rgba(18,215,230,.17)}.mobile-menu{display:none;background:transparent;color:#fff;border:0}
+        .nav{position:sticky;top:0;z-index:40;background:rgba(3,15,27,.7);backdrop-filter:blur(10px);border-bottom:1px solid rgba(164,238,238,.08);color:#fff;transition:background .3s ease,backdrop-filter .3s ease,border-color .3s ease,box-shadow .3s ease}.nav.scrolled{background:rgba(3,15,27,.93);backdrop-filter:blur(20px);border-bottom-color:rgba(164,238,238,.16);box-shadow:0 12px 34px rgba(0,0,0,.22)}.nav-inner{max-width:1620px;margin:auto;padding:11px 24px;display:flex;align-items:center;gap:30px}.brand{display:flex;align-items:center;gap:11px;min-width:245px}.brand-mark{width:43px;height:43px;border-radius:13px;border:1px solid rgba(18,215,230,.6);display:grid;place-items:center;background:linear-gradient(145deg,rgba(18,215,230,.17),rgba(122,92,255,.08));box-shadow:0 0 24px rgba(18,215,230,.15)}.brand-name{font:700 22px 'Space Grotesk';letter-spacing:-.035em}.brand-sub{font-size:10px;color:#8fb2b4;letter-spacing:.14em;text-transform:uppercase;margin-top:2px}.navlinks{display:flex;align-items:center;gap:7px;flex:1;justify-content:center}.navlinks button{border:0;background:transparent;color:#c9dddd;padding:12px 13px;border-radius:10px;font-weight:600;font-size:14px;transition:.2s}.navlinks button:hover,.navlinks button.active{color:#fff;background:rgba(255,255,255,.05)}.navlinks button.active{box-shadow:inset 0 -2px ${C.aqua}}.cart-btn{border:1px solid rgba(18,215,230,.55);background:linear-gradient(135deg,#24b7cf,#2d91c5);color:#041321;border-radius:13px;padding:11px 16px;font-weight:800;display:flex;align-items:center;gap:8px;box-shadow:0 8px 28px rgba(18,215,230,.17)}.mobile-menu{display:none;background:transparent;color:#fff;border:0;position:relative;width:30px;height:30px;z-index:2}.mobile-menu .bar{position:absolute;left:3px;right:3px;height:2.4px;background:#fff;border-radius:2px;transition:transform .3s ease,opacity .2s ease}.mobile-menu .b1{top:9px}.mobile-menu .b2{top:15px}.mobile-menu .b3{top:21px}.mobile-menu.open .b1{transform:translateY(6px) rotate(45deg)}.mobile-menu.open .b2{opacity:0}.mobile-menu.open .b3{transform:translateY(-6px) rotate(-45deg)}
         .hero{position:relative;color:#fff;min-height:calc(100vh - 76px);;display:flex;align-items:center;background:#031321 url('/betta-fish.jpg') center 42%/cover no-repeat;isolation:isolate}.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(2,11,22,.97) 0%,rgba(3,17,32,.86) 33%,rgba(2,12,25,.48) 62%,rgba(2,9,18,.58) 100%);z-index:-1}.hero:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 64% 44%,rgba(81,59,212,.25),transparent 32%),linear-gradient(0deg,rgba(3,13,24,.35),transparent 25%);z-index:-1}.hero-inner{max-width:1620px;width:100%;margin:auto;padding:58px 34px 74px;display:grid;grid-template-columns:minmax(0,1.03fr) minmax(520px,.97fr);gap:48px;align-items:center}.badge{display:inline-flex;align-items:center;gap:9px;padding:8px 13px;border:1px solid rgba(18,215,230,.32);background:rgba(3,22,38,.45);border-radius:999px;backdrop-filter:blur(10px);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#c9f8f4}.dot{width:8px;height:8px;border-radius:50%;background:#5ff4e4;box-shadow:0 0 14px #5ff4e4}.hero-kicker{color:#a9d7d7;font-weight:700;font-size:15px;margin:19px 0 12px}.hero h1{font:700 clamp(52px,5.15vw,82px)/.96 'Space Grotesk';letter-spacing:-.055em;margin:0;max-width:770px}.hero h1 .accent{color:#16dbe7}.hero p{max-width:600px;color:#c9dcdd;font-size:17px;line-height:1.72;margin:23px 0 0}.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:29px}.primary,.secondary{border-radius:13px;padding:14px 20px;font-weight:800;font-size:15px;display:inline-flex;align-items:center;gap:7px;transition:.22s}.primary{border:1px solid rgba(255,255,255,.1);background:linear-gradient(135deg,#18d8e5,#3a8eff);color:#041321;box-shadow:0 12px 34px rgba(18,215,230,.23)}.secondary{border:1px solid rgba(201,243,238,.3);background:rgba(3,16,31,.3);color:#fff;backdrop-filter:blur(8px)}.primary:hover,.secondary:hover{transform:translateY(-3px)}.stats{display:flex;gap:0;flex-wrap:wrap;margin-top:35px}.stat{padding:0 24px 0 0;margin-right:24px;border-right:1px solid rgba(201,243,238,.2);color:#9bb8ba;font-size:12px}.stat:last-child{border:0}.stat strong{display:block;color:#fff;font:700 16px 'Space Grotesk';margin-bottom:3px}.hero-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}.hero-card{position:relative;min-height:224px;padding:17px;border-radius:18px;overflow:hidden;border:1px solid rgba(173,239,240,.27);background:linear-gradient(145deg,rgba(4,24,42,.68),rgba(8,20,39,.4));backdrop-filter:blur(13px);box-shadow:0 18px 55px rgba(0,0,0,.2);transition:.25s}.hero-card:hover{transform:translateY(-5px);border-color:rgba(18,215,230,.62)}.hero-card .hc-top{display:flex;justify-content:space-between;align-items:flex-start}.hc-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(18,215,230,.12);color:#baf8f1;border:1px solid rgba(18,215,230,.17)}.hero-card .hc-arrow{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:rgba(18,215,230,.12);color:#8ceff2}.hero-card h3{font:700 19px 'Space Grotesk';margin:17px 0 5px}.hero-card p{font-size:13px;line-height:1.48;color:#aac3c4;margin:0;max-width:205px}.hero-card .mini-image{position:absolute;right:-8px;bottom:-16px;opacity:.98;transform:scale(1.02);transition:transform .35s ease}
         .hero-card:hover .mini-image{transform:scale(1.1)}
 
@@ -122,7 +149,10 @@ export default function App() {
         .footer-map{max-width:1180px;margin:0 auto;padding:0 24px 42px}.footer-map iframe{width:100%;height:260px;border:0;border-radius:14px;filter:grayscale(.15) contrast(1.05)}
         @media(max-width:700px){.footer-map{padding:0 18px 32px}.footer-map iframe{height:220px}}
         .overlay{position:fixed;inset:0;background:rgba(0,12,20,.56);z-index:60}.drawer{position:absolute;right:0;top:0;bottom:0;width:min(440px,100%);background:${C.cream};display:flex;flex-direction:column;box-shadow:-20px 0 60px rgba(0,0,0,.22)}.drawer-head{padding:18px 20px;border-bottom:1px solid ${C.line};display:flex;justify-content:space-between;align-items:center}.drawer-body{flex:1;overflow:auto;padding:20px}.drawer-foot{padding:20px;border-top:1px solid ${C.line}}.icon-btn{border:0;background:transparent}.drawer-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 0;border-bottom:1px solid #e4e9e5}.form{display:flex;flex-direction:column;gap:13px}.form label{font-size:12px;font-weight:800}.form input,.form textarea{display:block;width:100%;margin-top:5px;border:1px solid ${C.line};border-radius:9px;padding:10px;background:#fff;outline:none}.form input:focus,.form textarea:focus{border-color:${C.aqua};box-shadow:0 0 0 3px rgba(18,215,230,.1)}
-        @media(max-width:1050px){.navlinks{display:none}.mobile-menu{display:block}.nav-inner{justify-content:space-between}.navlinks.mobile{display:flex;position:absolute;top:66px;left:0;right:0;background:rgba(3,15,27,.97);padding:12px 20px;flex-direction:column;align-items:stretch;border-bottom:1px solid rgba(255,255,255,.1)}.navlinks.mobile button{text-align:left}.hero-inner{grid-template-columns:1fr}.hero-cards{max-width:820px}.product-grid{grid-template-columns:repeat(2,1fr)}.category-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:1050px){.navlinks{display:none}.mobile-menu{display:block}.nav-inner{justify-content:space-between}.navlinks.mobile{display:flex;position:absolute;top:66px;left:0;right:0;background:rgba(3,15,27,.97);padding:12px 20px;flex-direction:column;align-items:stretch;border-bottom:1px solid rgba(255,255,255,.1);animation:menu-drop .28s ease}.navlinks.mobile button{text-align:left}.hero-inner{grid-template-columns:1fr}.hero-cards{max-width:820px}.product-grid{grid-template-columns:repeat(2,1fr)}.category-grid{grid-template-columns:repeat(2,1fr)}}
+        @keyframes menu-drop{0%{opacity:0;transform:translateY(-10px)}100%{opacity:1;transform:translateY(0)}}
+        .rating{display:flex;align-items:center;gap:4px;margin:2px 0 6px}.rating svg{color:#f5b400}.rating span{font-size:11px;color:#8a9799;font-weight:700;margin-left:2px}
+        .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:translateY(0)}
         @media(max-width:700px){.nav-inner{padding:9px 15px}.brand{min-width:0}.brand-mark{width:38px;height:38px}.brand-name{font-size:18px}.brand-sub{font-size:8.5px}.cart-btn{padding:9px 11px}.hero{min-height:auto}.hero-inner{padding:55px 18px 75px;gap:35px}.hero h1{font-size:clamp(42px,13vw,60px)}.hero p{font-size:14.5px}.hero-cards{grid-template-columns:1fr 1fr;gap:9px}.hero-card{min-height:175px;padding:13px}.hero-card h3{font-size:15px;margin-top:12px}.hero-card p{font-size:11px}.trust{grid-template-columns:1fr;padding:0 18px 25px}.section{padding:52px 18px}.section-head{align-items:flex-start;flex-direction:column}.product-grid{grid-template-columns:1fr 1fr;gap:11px}.product-art{height:170px}.product-body{padding:12px}.product-name{font-size:13px}.product-note{font-size:10.5px}.price{font-size:15px}.add{padding:7px 9px}.category-grid{grid-template-columns:1fr 1fr;gap:10px}.category-card{min-height:240px;padding:14px}.category-card h3{font-size:18px}.category-card p{font-size:10.5px}.story-grid{grid-template-columns:1fr;gap:25px}.story-visual{min-height:290px;order:-1}.story-points{gap:9px}.custom-box{padding:45px 18px;flex-direction:column;align-items:flex-start}.custom h2{font-size:32px}.search input{width:100%}.search{width:100%}.footer-inner{padding:35px 18px}.stats{gap:16px}.stat{margin-right:0;padding-right:16px}.hero-cards .hero-card:nth-child(n+3){min-height:160px}}
         .whatsapp-float{position:fixed;right:22px;bottom:22px;z-index:70;width:58px;height:58px;border-radius:50%;background:#25D366;color:#fff;display:grid;place-items:center;box-shadow:0 12px 32px rgba(37,211,102,.45);transition:.2s}
         .whatsapp-float:hover{transform:scale(1.08)}
@@ -135,13 +165,13 @@ export default function App() {
         @keyframes add-pop{0%{transform:scale(1)}35%{transform:scale(1.12)}100%{transform:scale(1)}}
       `}</style>
 
-      <header className="nav">
+      <header className={`nav ${scrolled ? "scrolled" : ""}`}>
         <div className="nav-inner">
           <div className="brand">
             <div className="brand-mark"><Waves size={23} color={C.aqua} /></div>
             <div><div className="brand-name">Aqua Dreamland</div><div className="brand-sub">Aquarium • Décor • More</div></div>
           </div>
-          <button className="mobile-menu" onClick={() => setMobileNav(v => !v)}><Menu /></button>
+          <button className={`mobile-menu ${mobileNav ? "open" : ""}`} onClick={() => setMobileNav(v => !v)} aria-label="Menu"><span className="bar b1"/><span className="bar b2"/><span className="bar b3"/></button>
           <nav className={`navlinks ${mobileNav ? "mobile" : ""}`}>
             <button className="active" onClick={() => {scrollTo("home");setMobileNav(false)}}>Home</button>
             {CATEGORIES.map(c => <button key={c.id} onClick={() => {setActiveCat(c.id);scrollTo("shop");setMobileNav(false)}}>{c.label}</button>)}
@@ -175,31 +205,31 @@ export default function App() {
           <svg className="wave-bottom" viewBox="0 0 1200 55" preserveAspectRatio="none"><path d="M0 28 C160 58 340 0 580 24 C830 51 1020 8 1200 27 L1200 55 L0 55Z"/></svg>
         </section>
 
-        <section className="trust">
+        <Reveal className="trust">
           <div className="trust-card"><div className="trust-icon"><Fish size={19}/></div><div><strong>Built in-house</strong><span>Tanks glazed and fitted by hand</span></div></div>
           <div className="trust-card"><div className="trust-icon"><Leaf size={19}/></div><div><strong>Picked with care</strong><span>Décor and gifts selected thoughtfully</span></div></div>
           <div className="trust-card"><div className="trust-icon"><ShieldCheck size={19}/></div><div><strong>Made for your space</strong><span>Starter setups to statement tanks</span></div></div>
-        </section>
+        </Reveal>
 
         <section id="featured" className="section featured">
           <div className="section-head"><div><div className="eyebrow">Featured aquariums</div><h2 className="section-title">Built for your little underwater world.</h2><p className="section-copy">Start simple or go all-in. These are the aquarium sizes customers can shop right now.</p></div><button className="text-link" onClick={() => {setActiveCat("aquariums");scrollTo("shop")}}>View all <ChevronRight size={16}/></button></div>
-          <div className="product-grid">{featured.map(p => <ProductCard key={p.id} p={p} cart={cart} addToCart={addToCart} changeQty={changeQty} justAdded={justAdded}/>)}</div>
+          <Reveal className="product-grid">{featured.map(p => <ProductCard key={p.id} p={p} cart={cart} addToCart={addToCart} changeQty={changeQty} justAdded={justAdded}/>)}</Reveal>
         </section>
 
         <section className="section categories">
           <div className="section-head"><div><div className="eyebrow">Shop by category</div><h2 className="section-title">More than just aquariums.</h2><p className="section-copy">Bring the same underwater personality into the rest of your space.</p></div></div>
-          <div className="category-grid">{CATEGORIES.map((c,i) => {const Icon=c.icon;return <div key={c.id} className={`category-card ${["cat-a","cat-b","cat-c","cat-d"][i]}`} onClick={() => {setActiveCat(c.id);scrollTo("shop")}}><div className="cat-icon"><Icon size={20}/></div><div><h3>{c.label}</h3><p>{c.blurb}</p><div className="cat-link">Explore collection <ChevronRight size={14}/></div></div></div>})}</div>
+          <Reveal className="category-grid">{CATEGORIES.map((c,i) => {const Icon=c.icon;return <div key={c.id} className={`category-card ${["cat-a","cat-b","cat-c","cat-d"][i]}`} onClick={() => {setActiveCat(c.id);scrollTo("shop")}}><div className="cat-icon"><Icon size={20}/></div><div><h3>{c.label}</h3><p>{c.blurb}</p><div className="cat-link">Explore collection <ChevronRight size={14}/></div></div></div>})}</Reveal>
         </section>
 
-        <section id="story" className="section story"><div className="story-grid"><div className="story-copy"><div className="eyebrow">Why Aqua Dreamland</div><h2 className="section-title">Small tanks. Big personality.</h2><p>We wanted aquarium shopping to feel less like picking a box of glass and more like building a little world. So we pair practical tank sizes with the small details that make a room feel yours.</p><div className="story-points"><div className="point"><Truck size={20}/><strong>Careful handling</strong><span>Designed around safe packing and easy handover.</span></div><div className="point"><Sparkles size={20}/><strong>Handpicked décor</strong><span>Pieces chosen to work around your tank and room.</span></div><div className="point"><Fish size={20}/><strong>Real tank sizes</strong><span>Clear 1 ft, 1.5 ft, 2 ft and 3 ft options.</span></div><div className="point"><Heart size={20}/><strong>Made with care</strong><span>In-house builds with a personal-shop feel.</span></div></div></div><div className="story-visual"><div className="quote"><strong>“Your tank should feel like part of your home.”</strong><span>Aqua Dreamland · Aquarium, décor & more</span></div></div></div></section>
+        <section id="story" className="section story"><Reveal className="story-grid"><div className="story-copy"><div className="eyebrow">Why Aqua Dreamland</div><h2 className="section-title">Small tanks. Big personality.</h2><p>We wanted aquarium shopping to feel less like picking a box of glass and more like building a little world. So we pair practical tank sizes with the small details that make a room feel yours.</p><div className="story-points"><div className="point"><Truck size={20}/><strong>Careful handling</strong><span>Designed around safe packing and easy handover.</span></div><div className="point"><Sparkles size={20}/><strong>Handpicked décor</strong><span>Pieces chosen to work around your tank and room.</span></div><div className="point"><Fish size={20}/><strong>Real tank sizes</strong><span>Clear 1 ft, 1.5 ft, 2 ft and 3 ft options.</span></div><div className="point"><Heart size={20}/><strong>Made with care</strong><span>In-house builds with a personal-shop feel.</span></div></div></div><div className="story-visual"><div className="quote"><strong>“Your tank should feel like part of your home.”</strong><span>Aqua Dreamland · Aquarium, décor & more</span></div></div></Reveal></section>
 
         <section id="shop" className="section shop">
           <div className="section-head"><div><div className="eyebrow">Shop everything</div><h2 className="section-title">Find your next favourite piece.</h2><p className="section-copy">Choose a category, search it, and add products straight to your cart.</p></div></div>
           <div className="shop-toolbar"><div className="pills">{CATEGORIES.map(c => {const Icon=c.icon;return <button key={c.id} className={`pill ${activeCat===c.id?"active":""}`} onClick={() => {setActiveCat(c.id);setQuery("")}}><Icon size={14}/>{c.label}</button>})}</div><div className="search"><Search size={15}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder={`Search ${CAT_META[activeCat].label.toLowerCase()}`}/></div></div>
-          {filtered.length ? <div className="product-grid">{filtered.map(p => <ProductCard key={p.id} p={p} cart={cart} addToCart={addToCart} changeQty={changeQty} justAdded={justAdded}/>)}</div> : <div className="empty">No products matched “{query}”. Try another search.</div>}
+          {filtered.length ? <Reveal className="product-grid">{filtered.map(p => <ProductCard key={p.id} p={p} cart={cart} addToCart={addToCart} changeQty={changeQty} justAdded={justAdded}/>)}</Reveal> : <div className="empty">No products matched “{query}”. Try another search.</div>}
         </section>
 
-        <section className="custom"><div className="custom-box"><div><div className="eyebrow">Have a tank idea?</div><h2>Let’s build your little world.</h2><p>Want a different size, a fitted setup, or a tank that works with your space? Start the conversation and we can turn the idea into a plan.</p></div><button className="custom-btn" onClick={() => window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"})}>Talk to Aqua Dreamland <ArrowUpRight size={16} style={{verticalAlign:"middle"}}/></button></div></section>
+        <section className="custom"><Reveal className="custom-box"><div><div className="eyebrow">Have a tank idea?</div><h2>Let’s build your little world.</h2><p>Want a different size, a fitted setup, or a tank that works with your space? Start the conversation and we can turn the idea into a plan.</p></div><button className="custom-btn" onClick={() => window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"})}>Talk to Aqua Dreamland <ArrowUpRight size={16} style={{verticalAlign:"middle"}}/></button></Reveal></section>
       </main>
 
       <div className="footer-map"><iframe title="Aqua Dreamland location" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=V.P.O.+Neerpur+Narnaul+Haryana&output=embed"/></div>
@@ -215,6 +245,6 @@ export default function App() {
 }
 
 function ProductCard({ p, cart, addToCart, changeQty, justAdded }) {
-  return <div className={`product-card ${justAdded === p.id ? "add-flash" : ""}`}><ProductArt cat={p.cat}/><div className="product-body">{p.badge && <span className="product-badge">{p.badge}</span>}<div className="product-name">{p.name}</div><div className="product-note">{p.note}</div><div className="product-row"><span className="price">{priceLabel(p)}</span>{justAdded === p.id ? <span className="product-badge" style={{margin:0,background:"#0ecb6b",color:"#fff"}}>✓ Added</span> : cart[p.id] ? <div className="qty"><button onClick={() => changeQty(p.id,-1)}><Minus size={12}/></button><span>{cart[p.id]}</span><button onClick={() => changeQty(p.id,1)}><Plus size={12}/></button></div> : <button className="add" onClick={() => addToCart(p.id)}>Add to cart</button>}</div></div></div>;
+  const r = ratingFor(p.id);
+  return <div className={`product-card ${justAdded === p.id ? "add-flash" : ""}`}><ProductArt cat={p.cat}/><div className="product-body">{p.badge && <span className="product-badge">{p.badge}</span>}<div className="product-name">{p.name}</div><div className="rating">{[...Array(5)].map((_, i) => <Star key={i} size={12} fill={i < Math.round(r.stars) ? "#f5b400" : "none"} strokeWidth={1.5}/>)}<span>{r.stars.toFixed(1)} ({r.count})</span></div><div className="product-note">{p.note}</div><div className="product-row"><span className="price">{priceLabel(p)}</span>{justAdded === p.id ? <span className="product-badge" style={{margin:0,background:"#0ecb6b",color:"#fff"}}>✓ Added</span> : cart[p.id] ? <div className="qty"><button onClick={() => changeQty(p.id,-1)}><Minus size={12}/></button><span>{cart[p.id]}</span><button onClick={() => changeQty(p.id,1)}><Plus size={12}/></button></div> : <button className="add" onClick={() => addToCart(p.id)}>Add to cart</button>}</div></div></div>;
 }
-
