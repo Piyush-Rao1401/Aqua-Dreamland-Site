@@ -155,7 +155,7 @@ export default function App() {
         .hero-card .mini-image .product-art .art-icon{display:none}
         .hero-card .mini-image .product-art:after{content:"";position:absolute;right:0;bottom:0;width:180px;height:165px;border-radius:14px;background-size:contain;background-repeat:no-repeat;background-position:center;opacity:1}
         .hero-card:nth-child(1) .mini-image .product-art:after{background-image:url('/aquarium-card-final.jpg')}
-        .hero-card:nth-child(2) .mini-image .product-art:after{background-image:url('/soft-toy-card-crop.jpg')}
+        .hero-card:nth-child(2) .mini-image .product-art:after{background-image:url('/soft-toy-original.jpeg')}
         .hero-card:nth-child(3) .mini-image .product-art:after{background-image:url('https://images.unsplash.com/photo-1753967825586-e9af49bcfac6?auto=format&fit=crop&w=800&q=85')}
         .hero-card:nth-child(4) .mini-image .product-art:after{background-image:url('/resin-card-crop.jpg')}
         .hero-card:nth-child(1),.hero-card:nth-child(2),.hero-card:nth-child(3),.hero-card:nth-child(4){
