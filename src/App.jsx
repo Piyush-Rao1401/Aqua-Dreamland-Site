@@ -225,7 +225,7 @@ export default function App() {
           </div>
           <div className="hero-inner">
             <div>
-              <div className="hero-logo"><img src="/logo-full.png" alt="Aqua Dreamland"/></div>
+              <div className="hero-logo"><img src="/logo-icon.png" alt="Aqua Dreamland"/></div>
               <div className="badge"><Fish size={12}/> Handpicked aquarium collection</div>
               <div className="hero-kicker">Aquariums · Soft Toys · Pots · Resin Décor</div>
               <h1>Everything for your <span className="accent">tank and everything</span><br/><span className="accent2">around it.</span></h1>
