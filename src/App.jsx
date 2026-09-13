@@ -167,7 +167,7 @@ export default function App() {
         .whatsapp-float:hover{transform:scale(1.08)}
         @media(max-width:700px){.whatsapp-float{right:16px;bottom:16px;width:52px;height:52px}}
         .bubbles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-        .bubble{position:absolute;bottom:-40px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.55),rgba(160,240,240,.08));border:1px solid rgba(200,250,250,.25);animation:bubble-rise linear infinite}
+        .bubble{position:absolute;bottom:-40px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.6),rgba(255,130,220,.14));border:1px solid rgba(255,150,225,.35);box-shadow:0 0 10px rgba(255,79,216,.15);animation:bubble-rise linear infinite}
         @keyframes bubble-rise{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:.7}90%{opacity:.5}100%{transform:translateY(-115vh) translateX(20px);opacity:0}}
         .hero-inner{position:relative;z-index:1}
         .explore-more{position:absolute;left:50%;bottom:52px;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;color:#bcd8d8;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;animation:bob 2.4s ease-in-out infinite}
