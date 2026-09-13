@@ -153,11 +153,11 @@ export default function App() {
         .hero-card .mini-image .product-art{background:transparent!important;overflow:visible}
         .hero-card .mini-image .product-art .art-glow,
         .hero-card .mini-image .product-art .art-icon{display:none}
-        .hero-card .mini-image .product-art:after{content:"";position:absolute;right:0;bottom:0;width:180px;height:150px;border-radius:28px 0 0 0;background-size:cover;background-position:center;opacity:.95;mask-image:linear-gradient(90deg,transparent 0%,#000 25%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 25%)}
-        .hero-card:nth-child(1) .mini-image .product-art:after{background-image:url('/aquarium-card-final.jpg')}
-        .hero-card:nth-child(2) .mini-image .product-art:after{background-image:url('/soft-toys-card-new.jpeg')}
-        .hero-card:nth-child(3) .mini-image .product-art:after{background-image:url('https://images.unsplash.com/photo-1753967825586-e9af49bcfac6?auto=format&fit=crop&w=800&q=85')}
-        .hero-card:nth-child(4) .mini-image .product-art:after{background-image:url('/resin-card-new.webp')}
+        .hero-card .mini-image .product-art:after{content:"";position:absolute;right:0;bottom:0;width:180px;height:165px;border-radius:28px 0 0 0;background-size:cover;background-position:center;opacity:.95;mask-image:linear-gradient(90deg,transparent 0%,#000 25%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 25%)}
+        .hero-card:nth-child(1) .mini-image .product-art:after{background-image:url('/aquarium-card-final.jpg');background-position:center 40%}
+        .hero-card:nth-child(2) .mini-image .product-art:after{background-image:url('/soft-toys-card-new.jpeg');background-position:center 25%}
+        .hero-card:nth-child(3) .mini-image .product-art:after{background-image:url('https://images.unsplash.com/photo-1753967825586-e9af49bcfac6?auto=format&fit=crop&w=800&q=85');background-position:center 65%}
+        .hero-card:nth-child(4) .mini-image .product-art:after{background-image:url('/resin-card-new.webp');background-position:center 15%}
         .hero-card:nth-child(1),.hero-card:nth-child(2),.hero-card:nth-child(3),.hero-card:nth-child(4){
           background:linear-gradient(135deg,rgba(5,30,50,.74),rgba(4,17,32,.46));
         }
