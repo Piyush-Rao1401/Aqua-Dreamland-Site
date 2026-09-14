@@ -23,7 +23,7 @@ const C = {
 const CAT_COLOR = { aquariums: "#2A9BFF", "soft-toys": "#B14AFF", pots: "#22C58B", resin: "#FF4FD8" };
 
 const CATEGORIES = [
-  { id: "aquariums", label: "Aquariums", icon: Fish, blurb: "Tanks built and glazed in-house, from a 1 ft starter to an 8mm-glass 3 footer.", image: "tank" },
+  { id: "aquariums", label: "Aquariums", icon: Fish, blurb: "Tanks built and glazed in-house — from a 1 ft starter to any custom size you need, ready to order.", image: "tank" },
   { id: "soft-toys", label: "Soft Toys", icon: Heart, blurb: "Soft toys for every corner of the house, starting at ₹150.", image: "toy" },
   { id: "pots", label: "Pots", icon: Flower2, blurb: "Plastic to ceramic, sized and priced for any plant.", image: "pot" },
   { id: "resin", label: "Resin Décor", icon: Gem, blurb: "Handmade resin pieces — frames, coasters, and table décor.", image: "resin" },
@@ -224,7 +224,7 @@ export default function App() {
               <div className="badge"><Fish size={12}/> Handpicked aquarium collection</div>
               <div className="hero-kicker">Aquariums · Soft Toys · Pots · Resin Décor</div>
               <h1>Everything for your <span className="accent">tank and everything</span><br/><span className="accent2">around it.</span></h1>
-              <p>From a first 1-foot starter tank to a fully fitted 3-footer — plus the soft toys, pots, and resin pieces that finish a room. Built and picked by hand.</p>
+              <p>From a 1-foot starter tank to any custom size you need — we'll build and set it up just for you. Plus the soft toys, pots, and resin pieces that finish a room.</p>
               <div className="hero-ctas"><button className="primary" onClick={() => {setActiveCat("aquariums");scrollTo("shop")}}><ShoppingBag size={16}/> Shop Aquariums <ChevronRight size={17}/></button><button className="secondary" onClick={() => scrollTo("featured")}><LayoutGrid size={16}/> Browse All Products <ArrowUpRight size={16}/></button></div>
               <div className="stats"><div className="stat"><Truck size={15}/><div><strong>1–3 ft</strong>aquarium sizes</div></div><div className="stat"><CreditCard size={15}/><div><strong>₹500+</strong>starting tanks</div></div><div className="stat"><Gift size={15}/><div><strong>Handpicked</strong>decor & gifts</div></div></div>
             </div>
