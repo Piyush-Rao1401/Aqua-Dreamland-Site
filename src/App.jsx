@@ -74,6 +74,43 @@ const GALLERY_IMAGES = [
 ];
 
 const CAT_META = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
+
+const LEGAL = {
+  terms: {
+    label: "Terms of Service",
+    updated: "Last updated: September 2026",
+    body: [
+      { h: "Orders & Pricing", p: "All prices on this site are in Indian Rupees (₹) and may change without prior notice. Aquarium and custom-build prices shown are starting prices — final pricing depends on size, glass thickness, and setup requirements, and is confirmed with you on WhatsApp before you pay." },
+      { h: "Custom Aquariums", p: "Custom-size tanks are built and glazed in-house to your specifications. Since these are made to order, production and delivery timelines are discussed and agreed with you directly over WhatsApp at the time of ordering." },
+      { h: "Payment", p: "We currently accept prepaid orders only, via UPI (PhonePe, Google Pay, and similar apps). Cash on Delivery is not available. Your order is confirmed only after payment is received and verified." },
+      { h: "Product Variation", p: "Soft toys, pots, and resin décor are partly handmade or sourced in small batches — slight variation in colour, size, or finish compared to site photos is normal and not considered a defect." },
+      { h: "Right to Refuse", p: "We reserve the right to decline or cancel an order — for example if an item is out of stock, a custom request isn't feasible, or payment cannot be verified. In such cases any amount paid will be refunded." },
+      { h: "Use of This Site", p: "This website and its content (text, images, logo) belong to Aqua Dreamland. Please don't copy or reuse our product photos or descriptions without permission." },
+    ],
+  },
+  privacy: {
+    label: "Privacy Policy",
+    updated: "Last updated: September 2026",
+    body: [
+      { h: "What We Collect", p: "When you place an order, we collect your name, phone number, email address, and delivery address. This is used only to process your order, confirm delivery, and stay in touch about your purchase." },
+      { h: "How We Use It", p: "Your details are used to send order confirmations (by email and WhatsApp), coordinate delivery or setup, and respond to any questions you raise. We do not sell or rent your information to third parties." },
+      { h: "Payment Data", p: "Payments are made directly through your UPI app (PhonePe, Google Pay, etc.) to our UPI ID. We do not see or store your card, bank, or UPI PIN details on this site." },
+      { h: "Communication", p: "By placing an order you agree to receive order-related messages from us on WhatsApp and email. You can ask us to stop non-essential communication anytime by messaging us." },
+      { h: "Data Storage", p: "Order details are kept only as long as needed to fulfil your order and for basic business records. If you'd like your information removed, message us on WhatsApp and we'll action it." },
+    ],
+  },
+  refund: {
+    label: "Returns & Refunds",
+    updated: "Last updated: September 2026",
+    body: [
+      { h: "Easy Returns", p: "If something isn't right with your order, message us on WhatsApp within 3 days of delivery with your order details and a photo of the item. We'll sort it out — a replacement, repair, or refund, depending on the issue." },
+      { h: "Aquariums & Custom Builds", p: "Because tanks are custom-built and delivered with setup, returns are handled case by case — please raise any issue (leaks, damage in transit, fitting problems) with us right away so we can fix it quickly." },
+      { h: "Live Items", p: "Fish and plants, where applicable, are checked before handover. Please inspect them at the time of delivery — issues reported later cannot be covered." },
+      { h: "Refund Method", p: "Approved refunds are sent back to the original UPI account used for payment, usually within 3–5 business days of approval." },
+      { h: "Non-Returnable", p: "Items that are used, custom-modified to your specification, or damaged due to mishandling after delivery are not eligible for return." },
+    ],
+  },
+};
 const UPI_ID = "9306793252@ybl";
 const SHOP_WHATSAPP = "917015280545";
 const money = n => "₹" + n.toLocaleString("en-IN");
@@ -117,6 +154,7 @@ export default function App() {
   const [checkoutStep, setCheckoutStep] = useState("cart");
   const [orderTotal, setOrderTotal] = useState(0);
   const [toast, setToast] = useState(null);
+  const [legalTab, setLegalTab] = useState(null);
   const [openFaq, setOpenFaq] = useState(0);
   const showToast = msg => { setToast(msg); clearTimeout(window.__toastTimer); window.__toastTimer = setTimeout(() => setToast(null), 2600); };
   const [form, setForm] = useState({ name: "", phone: "", email: "", address: "" });
@@ -250,6 +288,21 @@ export default function App() {
         @keyframes wa-pulse{0%{transform:scale(1);opacity:.55}100%{transform:scale(1.9);opacity:0}}
         .whatsapp-float:hover{transform:scale(1.08)}
         @media(max-width:700px){.whatsapp-float{right:16px;bottom:16px;width:52px;height:52px}}
+        .footer-links button.legal-link{border:0;background:none;color:#91abad;font-size:12px;cursor:pointer;padding:0;display:flex;align-items:center;gap:6px}
+        .footer-links button.legal-link:hover{color:#cfe6e5;text-decoration:underline}
+        .legal-overlay{position:fixed;inset:0;background:rgba(0,12,20,.62);z-index:60;display:flex;align-items:center;justify-content:center;padding:20px}
+        .legal-modal{background:${C.cream};border-radius:20px;max-width:680px;width:100%;max-height:82vh;display:flex;flex-direction:column;box-shadow:0 30px 70px rgba(0,0,0,.35);overflow:hidden}
+        .legal-head{padding:18px 22px;border-bottom:1px solid ${C.line};display:flex;justify-content:space-between;align-items:center;background:#fff}
+        .legal-head h3{font:700 18px 'Space Grotesk';margin:0;color:${C.navy}}
+        .legal-tabs{display:flex;gap:6px;padding:14px 22px 0;background:#fff}
+        .legal-tab{border:1px solid ${C.line};background:#fff;color:#65787a;border-radius:999px;padding:8px 14px;font-size:12px;font-weight:700;transition:.2s}
+        .legal-tab.active{background:${C.navy};color:#fff;border-color:${C.navy}}
+        .legal-body{flex:1;overflow:auto;padding:20px 22px 26px}
+        .legal-body .legal-updated{font-size:11px;color:#899597;margin-bottom:16px}
+        .legal-block{margin-bottom:18px}
+        .legal-block h4{font:700 14px 'Space Grotesk';margin:0 0 6px;color:${C.navy}}
+        .legal-block p{font-size:13px;line-height:1.65;color:#5a6d70;margin:0}
+        @media(max-width:700px){.legal-modal{max-height:88vh;border-radius:16px}.legal-tabs{flex-wrap:wrap}}
         .bubbles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
         .bubble{position:absolute;bottom:-40px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.6),rgba(255,130,220,.14));border:1px solid rgba(255,150,225,.35);box-shadow:0 0 10px rgba(255,79,216,.15);animation:bubble-rise linear infinite}
         @keyframes bubble-rise{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:.7}90%{opacity:.5}100%{transform:translateY(-115vh) translateX(20px);opacity:0}}
@@ -387,7 +440,9 @@ export default function App() {
 
       <div className="trust-band"><span><CreditCard size={17}/> 100% Prepaid Orders</span><span><RotateCcw size={17}/> Easy Returns</span><span><ShieldCheck size={17}/> Secure UPI Payment</span></div>
       <div className="footer-map"><iframe title="Aqua Dreamland location" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Aqua+Dreamland,28.0703106,76.1502749&z=16&output=embed"/></div>
-      <footer><div className="footer-inner"><div><div className="footer-brand">Aqua Dreamland</div><p>Aquariums, décor, gifts and little things that make your space feel alive.</p><div className={`hours-badge ${shopStatus.isOpen ? "open" : "closed"}`}><span className="status-dot"/> {shopStatus.isOpen ? "Open Now" : "Closed Now"} · Today {shopStatus.today}</div><div className="hours-note">Mon–Sat: 7:00 AM – 9:00 PM · Sun: 8:00 AM – 8:00 PM</div></div><div className="footer-links"><span><MapPin size={14}/> Rewari Road, Neerpur Road, Narnaul, Haryana 123001</span><span><Phone size={14}/> +91 7015280545</span><span>© 2026 Aqua Dreamland</span></div></div></footer>
+      <footer><div className="footer-inner"><div><div className="footer-brand">Aqua Dreamland</div><p>Aquariums, décor, gifts and little things that make your space feel alive.</p><div className={`hours-badge ${shopStatus.isOpen ? "open" : "closed"}`}><span className="status-dot"/> {shopStatus.isOpen ? "Open Now" : "Closed Now"} · Today {shopStatus.today}</div><div className="hours-note">Mon–Sat: 7:00 AM – 9:00 PM · Sun: 8:00 AM – 8:00 PM</div></div><div className="footer-links"><span><MapPin size={14}/> Rewari Road, Neerpur Road, Narnaul, Haryana 123001</span><span><Phone size={14}/> +91 7015280545</span><button className="legal-link" onClick={() => setLegalTab("terms")}>Terms</button><button className="legal-link" onClick={() => setLegalTab("privacy")}>Privacy</button><button className="legal-link" onClick={() => setLegalTab("refund")}>Returns &amp; Refunds</button><span>© 2026 Aqua Dreamland</span></div></div></footer>
+
+      {legalTab && <div className="legal-overlay" onClick={() => setLegalTab(null)}><div className="legal-modal" onClick={e => e.stopPropagation()}><div className="legal-head"><h3>{LEGAL[legalTab].label}</h3><button className="icon-btn" onClick={() => setLegalTab(null)}><X size={20}/></button></div><div className="legal-tabs">{Object.keys(LEGAL).map(k => <button key={k} className={`legal-tab ${legalTab===k?"active":""}`} onClick={() => setLegalTab(k)}>{LEGAL[k].label}</button>)}</div><div className="legal-body"><div className="legal-updated">{LEGAL[legalTab].updated}</div>{LEGAL[legalTab].body.map((b,i) => <div className="legal-block" key={i}><h4>{b.h}</h4><p>{b.p}</p></div>)}</div></div></div>}
 
       {cartOpen && <div className="overlay" onClick={() => setCartOpen(false)}><div className="drawer" onClick={e => e.stopPropagation()}><div className="drawer-head"><span className="sg" style={{fontWeight:700,fontSize:17}}>{checkoutStep === "cart" ? "Your Cart" : checkoutStep === "details" ? "Delivery Details" : checkoutStep === "payment" ? "Payment" : "Order Placed"}</span><button className="icon-btn" onClick={() => setCartOpen(false)}><X size={20}/></button></div><div className="drawer-body">{checkoutStep === "cart" && (cartItems.length ? cartItems.map(i => <div className="drawer-item" key={i.id}><div><div style={{fontWeight:700,fontSize:13}}>{i.name}</div><div style={{fontSize:11.5,color:C.muted}}>{priceLabel(i)} × {i.qty}</div></div><div className="qty"><button onClick={() => changeQty(i.id,-1)}><Minus size={12}/></button><span style={{fontSize:13}}>{i.qty}</span><button onClick={() => changeQty(i.id,1)}><Plus size={12}/></button></div></div>) : <div className="empty">Your cart is empty. Add something you love.</div>)}{checkoutStep === "details" && <form id="checkout-form" className="form" onSubmit={placeOrder}><label>Full name<input required value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label><label>Phone number<input required value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/></label><label>Email address<input type="email" required value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/></label><label>Delivery address<textarea required rows={4} value={form.address} onChange={e=>setForm({...form,address:e.target.value})}/></label></form>}{checkoutStep === "payment" && <div style={{textAlign:"center",padding:"10px 4px"}}><div style={{fontSize:13,color:C.muted,marginBottom:4}}>Amount to pay</div><div className="sg" style={{fontWeight:800,fontSize:32,marginBottom:18}}>{money(cartTotal)}</div><button className="primary" onClick={payViaUpi} style={{width:"100%",justifyContent:"center",background:`linear-gradient(135deg,${C.aqua},${C.aqua2})`,border:0,marginBottom:12}}>Pay via UPI (PhonePe / GPay) <ArrowUpRight size={16}/></button><p style={{fontSize:11.5,color:C.muted,lineHeight:1.6,marginBottom:16}}>Tapping this opens your UPI app with the amount pre-filled. Complete the payment, then confirm below.</p><button className="secondary" onClick={confirmPaid} style={{width:"100%",justifyContent:"center",color:C.navy,border:`1px solid ${C.line}`,background:"#fff"}}><Check size={16}/> I've completed the payment</button><div className="wa-reminder"><MessageCircle size={14}/> This opens WhatsApp with your order details pre-filled — please tap <strong>Send</strong> there to notify us!</div></div>}{checkoutStep === "done" && <div style={{textAlign:"center",padding:"45px 12px"}}><div style={{width:56,height:56,borderRadius:"50%",background:C.aqua,display:"grid",placeItems:"center",margin:"0 auto 16px"}}><Check size={28}/></div><div className="sg" style={{fontWeight:700,fontSize:18}}>Thanks, {form.name.split(" ")[0] || "there"}!</div><p style={{fontSize:13,color:C.muted,lineHeight:1.6,marginBottom:22}}>A confirmation has been emailed to {form.email}. If you haven't already, please tap <strong>Send</strong> on the WhatsApp message to notify us. We'll reach out on {form.phone} to confirm.</p><button className="primary" onClick={() => {setCartOpen(false);setCheckoutStep("cart")}} style={{width:"100%",justifyContent:"center",background:`linear-gradient(135deg,${C.aqua},${C.aqua2})`,border:0}}>Continue Shopping <ChevronRight size={16}/></button></div>}
         {(checkoutStep === "cart" || checkoutStep === "details" || checkoutStep === "payment") && <div className="trust-strip"><span><CreditCard size={14}/> Prepaid Order</span><span><RotateCcw size={14}/> Easy Returns</span><span><ShieldCheck size={14}/> Secure UPI</span></div>}</div>{(checkoutStep === "cart" || checkoutStep === "details") && <div className="drawer-foot"><div style={{display:"flex",justifyContent:"space-between",marginBottom:13}}><span style={{color:C.muted,fontSize:13}}>Total</span><strong className="sg">{money(cartTotal)}</strong></div>{checkoutStep === "cart" ? <button className="primary" disabled={!cartItems.length} onClick={() => setCheckoutStep("details")} style={{width:"100%",justifyContent:"center",background:cartItems.length?`linear-gradient(135deg,${C.aqua},${C.aqua2})`:`#ccd5d2`,border:0}}>Proceed to Checkout <ChevronRight size={16}/></button> : <button className="primary" type="submit" form="checkout-form" style={{width:"100%",justifyContent:"center",background:C.navy,color:"#fff",border:0}}>Continue to Payment</button>}</div>}</div></div>}
