@@ -33,7 +33,7 @@ const FAQS = [
   { q: "Can I order a custom size aquarium?", a: "Yes! From a 1 ft starter tank to any custom size you need, we'll build and set it up for you. Just message us on WhatsApp with your requirements." },
   { q: "What payment methods do you accept?", a: "We accept UPI payments (PhonePe, Google Pay, and more). All orders are prepaid — your order is confirmed once payment is received." },
   { q: "Is Cash on Delivery available?", a: "Currently we only accept prepaid orders via UPI, for a smooth and secure experience for both sides." },
-  { q: "Do you sell fish and birds too?", a: "Yes, along with aquariums and décor, we also have a variety of fish and birds available in-store." },
+  { q: "Do you sell fish too?", a: "Yes, along with aquariums and décor, we also have a variety of fish available in-store." },
   { q: "What if I'm not happy with my order?", a: "We offer easy returns — just reach out to us on WhatsApp and we'll sort it out for you." },
   { q: "What are your shop timings?", a: "Monday–Saturday: 7:00 AM – 9:00 PM. Sunday: 8:00 AM – 8:00 PM." },
 ];
