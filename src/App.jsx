@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect, useRef } from "react";
 import {
   ShoppingCart, X, Plus, Minus, Check, ChevronRight, Waves,
   Fish, Flower2, Gem, Heart, MapPin, Phone, Search, Sparkles,
-  ShieldCheck, Truck, Leaf, Menu, ArrowUpRight, MessageCircle, Star, ShoppingBag, LayoutGrid, Gift, CreditCard, MousePointer2, ChevronDown, RotateCcw
+  ShieldCheck, Truck, Leaf, Menu, ArrowUpRight, MessageCircle, Star, ShoppingBag, LayoutGrid, Gift, CreditCard, MousePointer2, ChevronDown, RotateCcw, Instagram
 } from "lucide-react";
 
 const C = {
@@ -59,6 +59,18 @@ const PRODUCTS = [
   { id: "rs-2", cat: "resin", name: "Resin Keychain", price: 350, note: "Handmade · assorted" },
   { id: "rs-3", cat: "resin", name: "Resin Coaster Set", price: 450, note: "Handmade · set" },
   { id: "rs-4", cat: "resin", name: "Resin Table Decor", price: 600, note: "Handmade · statement piece" },
+];
+
+const GALLERY_IMAGES = [
+  { id: 1, src: "/01-buddha-planted-tank.jpeg", alt: "Buddha statue planted aquarium at Aqua Dreamland" },
+  { id: 2, src: "/02-oscar-parrot-fish.jpeg", alt: "Oscar and parrot fish in a customer tank" },
+  { id: 3, src: "/03-shop-tank-rack.jpeg", alt: "Rack of aquariums at Aqua Dreamland shop" },
+  { id: 4, src: "/04-buddha-tank-planted.jpeg", alt: "Buddha statue planted tank with plants" },
+  { id: 5, src: "/05-goldfish-tank.jpeg", alt: "Goldfish swimming in a decorated tank" },
+  { id: 6, src: "/06-oscar-starfish-tank-a.jpeg", alt: "Oscar fish with starfish decor" },
+  { id: 7, src: "/07-oscar-starfish-tank-b.jpeg", alt: "Aquarium with ship wreck decor and fish" },
+  { id: 8, src: "/08-red-parrot-fish-school.jpeg", alt: "School of red parrot fish" },
+  { id: 9, src: "/09-shop-storage-tanks.jpeg", alt: "Aqua Dreamland shop storage room with tanks" },
 ];
 
 const CAT_META = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
@@ -227,6 +239,26 @@ export default function App() {
         .toast svg{color:${C.aqua};flex:none}
         @keyframes toast-in{0%{transform:translateX(-50%) translateY(30px);opacity:0}100%{transform:translateX(-50%) translateY(0);opacity:1}}
         @media(max-width:700px){.toast{bottom:84px;font-size:12.5px;padding:12px 18px;max-width:88vw;text-align:center}}
+        .gallery{background:${C.navy};color:#fff;position:relative;overflow:hidden}
+        .gallery:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(18,215,230,.14),transparent 32%),radial-gradient(circle at 85% 75%,rgba(177,74,255,.14),transparent 34%);pointer-events:none}
+        .gallery .section-head,.gallery .gallery-grid{position:relative;z-index:1}
+        .gallery .section-copy{color:#9bb8ba}
+        .ig-follow{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(18,215,230,.35);background:rgba(18,215,230,.08);color:#fff;border-radius:999px;padding:10px 18px;font-weight:800;font-size:13px;transition:.25s ease;white-space:nowrap}
+        .ig-follow:hover{transform:translateY(-2px);background:rgba(18,215,230,.16);border-color:rgba(18,215,230,.6)}
+        .ig-follow svg{color:${C.aqua}}
+        .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+        .gallery-item{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:1/1;border:1px solid rgba(173,239,240,.18);background:#07202f;box-shadow:0 14px 34px rgba(0,0,0,.25);transition:.3s}
+        .gallery-item:hover{transform:translateY(-5px);border-color:rgba(18,215,230,.55);box-shadow:0 22px 46px rgba(0,0,0,.35)}
+        .gallery-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+        .gallery-item:hover img{transform:scale(1.08)}
+        .gallery-item:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(1,11,20,.85) 100%);opacity:0;transition:opacity .3s ease}
+        .gallery-item:hover:after{opacity:1}
+        .gallery-overlay{position:absolute;left:12px;right:12px;bottom:12px;z-index:1;display:flex;align-items:center;gap:6px;color:#fff;font-size:11.5px;font-weight:700;opacity:0;transform:translateY(6px);transition:opacity .3s ease,transform .3s ease}
+        .gallery-item:hover .gallery-overlay{opacity:1;transform:translateY(0)}
+        .gallery-overlay svg{color:${C.aqua};flex:none}
+        .gallery-cta{text-align:center;margin-top:26px;position:relative;z-index:1}
+        @media(max-width:900px){.gallery-grid{grid-template-columns:repeat(3,1fr);gap:10px}}
+        @media(max-width:700px){.gallery-grid{grid-template-columns:repeat(2,1fr);gap:9px}.gallery-item{border-radius:12px}.gallery .section-head{gap:14px}}
       `}</style>
 
       <header className={`nav ${scrolled ? "scrolled" : ""}`}>
@@ -295,6 +327,27 @@ export default function App() {
         <section id="story" className="section story"><Reveal className="story-grid"><div className="story-copy"><div className="eyebrow">Why Aqua Dreamland</div><h2 className="section-title">Small tanks. Big personality.</h2><p>We wanted aquarium shopping to feel less like picking a box of glass and more like building a little world. So we pair practical tank sizes with the small details that make a room feel yours.</p><div className="story-points"><div className="point"><Truck size={20}/><strong>Careful handling</strong><span>Designed around safe packing and easy handover.</span></div><div className="point"><Sparkles size={20}/><strong>Handpicked décor</strong><span>Pieces chosen to work around your tank and room.</span></div><div className="point"><Fish size={20}/><strong>Any size you need</strong><span>From a 1 ft starter to fully custom builds.</span></div><div className="point"><Heart size={20}/><strong>Made with care</strong><span>In-house builds with a personal-shop feel.</span></div></div></div><div className="story-visual"><div className="quote"><span className="quote-mark">“</span><strong>“Your tank should feel like part of your home.”</strong><span>Aqua Dreamland · Aquarium, décor & more</span></div></div></Reveal></section>
 
         <section className="section testimonials"><Reveal><div className="section-head centered"><div><div className="eyebrow pill"><Star size={11}/> 5.0 on Google</div><h2 className="section-title">What Customers Say</h2><p className="section-copy center">Real reviews from real customers, straight from our Google listing.</p></div></div><div className="testi-grid"><div className="testi-card"><div className="testi-stars">{[...Array(5)].map((_,i) => <Star key={i} size={14} fill="#f5b400" color="#f5b400"/>)}</div><p>“Very nice collection of fishes and aquariums. Beautiful and unique artefacts are also available. The owner is very sweet and amiable — overall a wonderful experience, must visit.”</p><span>— Google Review</span></div><div className="testi-card"><div className="testi-stars">{[...Array(5)].map((_,i) => <Star key={i} size={14} fill="#f5b400" color="#f5b400"/>)}</div><p>“This is the best place in Narnaul to buy fish and so many types of birds at a good price. If your pet is facing any problem, you can call them and they will help you.”</p><span>— Google Review</span></div><div className="testi-card"><div className="testi-stars">{[...Array(5)].map((_,i) => <Star key={i} size={14} fill="#f5b400" color="#f5b400"/>)}</div><p>“Best facility in the Narnaul area — Aqua Dreamland helped me achieve the best vibe in my office!”</p><span>— Google Review</span></div></div></Reveal></section>
+
+        <section className="section gallery">
+          <Reveal>
+            <div className="section-head centered" style={{display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left",flexWrap:"wrap",gap:16}}>
+              <div>
+                <div className="eyebrow pill"><Instagram size={11}/> From Our Instagram</div>
+                <h2 className="section-title">Tanks We've Built</h2>
+                <p className="section-copy">A peek at real setups, fish and décor from our shop and customer homes.</p>
+              </div>
+              <a className="ig-follow" href="https://www.instagram.com/aqua_dreamland" target="_blank" rel="noopener noreferrer"><Instagram size={16}/> Follow @aqua_dreamland</a>
+            </div>
+            <div className="gallery-grid">
+              {GALLERY_IMAGES.map(img => (
+                <a key={img.id} className="gallery-item" href="https://www.instagram.com/aqua_dreamland" target="_blank" rel="noopener noreferrer">
+                  <img src={img.src} alt={img.alt} loading="lazy" />
+                  <div className="gallery-overlay"><Instagram size={13}/> View on Instagram</div>
+                </a>
+              ))}
+            </div>
+          </Reveal>
+        </section>
 
         <section id="shop" className="section shop">
           <div className="section-head"><div><div className="eyebrow">Shop everything</div><h2 className="section-title">Find your next favourite piece.</h2><p className="section-copy">Choose a category, search it, and add products straight to your cart.</p></div></div>
