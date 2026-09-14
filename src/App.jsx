@@ -95,7 +95,9 @@ export default function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState("cart");
   const [orderTotal, setOrderTotal] = useState(0);
-  const [form, setForm] = useState({ name: "", phone: "", address: "" });
+  const [toast, setToast] = useState(null);
+  const showToast = msg => { setToast(msg); clearTimeout(window.__toastTimer); window.__toastTimer = setTimeout(() => setToast(null), 2600); };
+  const [form, setForm] = useState({ name: "", phone: "", email: "", address: "" });
   const [query, setQuery] = useState("");
   const [navSearchOpen, setNavSearchOpen] = useState(false);
   const [mobileNav, setMobileNav] = useState(false);
@@ -119,7 +121,7 @@ export default function App() {
   const cartTotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
 
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  const addToCart = id => { setCart(c => ({ ...c, [id]: (c[id] || 0) + 1 })); setJustAdded(id); setTimeout(() => setJustAdded(curr => curr === id ? null : curr), 700); };
+  const addToCart = id => { setCart(c => ({ ...c, [id]: (c[id] || 0) + 1 })); setJustAdded(id); showToast(`✓ ${PRODUCTS.find(p => p.id === id)?.name || "Item"} added to cart`); setTimeout(() => setJustAdded(curr => curr === id ? null : curr), 700); };
   const changeQty = (id, delta) => setCart(c => ({ ...c, [id]: Math.max(0, (c[id] || 0) + delta) }));
   const openCart = () => { setCheckoutStep("cart"); setCartOpen(true); };
   const placeOrder = e => { e.preventDefault(); setCheckoutStep("payment"); };
@@ -129,7 +131,18 @@ export default function App() {
   const confirmPaid = () => {
     const msg = `New order on Aqua Dreamland!\nName: ${form.name}\nPhone: ${form.phone}\nAddress: ${form.address}\nItems: ${orderSummary()}\nTotal: ${money(cartTotal)}\nPayment: Paid via UPI (please verify)`;
     window.open(`https://wa.me/${SHOP_WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank");
+    if (window.emailjs && form.email) {
+      window.emailjs.send("service_cu2o2ui", "template_hb68ekq", {
+        to_email: form.email,
+        customer_name: form.name,
+        order_time: new Date().toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }),
+        items: orderSummary(),
+        total: money(cartTotal),
+        address: form.address,
+      }).catch(err => console.error("EmailJS error:", err));
+    }
     setOrderTotal(cartTotal);
+    showToast("✓ Order placed successfully!");
     setCheckoutStep("done");
     setCart({});
   };
@@ -194,6 +207,10 @@ export default function App() {
         @media(max-width:700px){.explore-more{display:none}}
         .add-flash{animation:add-pop .45s ease}
         @keyframes add-pop{0%{transform:scale(1)}35%{transform:scale(1.12)}100%{transform:scale(1)}}
+        .toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);z-index:80;background:${C.navy};color:#fff;padding:14px 22px;border-radius:999px;font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:9px;box-shadow:0 14px 40px rgba(0,0,0,.35);border:1px solid rgba(18,215,230,.35);animation:toast-in .35s cubic-bezier(.34,1.56,.64,1)}
+        .toast svg{color:${C.aqua};flex:none}
+        @keyframes toast-in{0%{transform:translateX(-50%) translateY(30px);opacity:0}100%{transform:translateX(-50%) translateY(0);opacity:1}}
+        @media(max-width:700px){.toast{bottom:84px;font-size:12.5px;padding:12px 18px;max-width:88vw;text-align:center}}
       `}</style>
 
       <header className={`nav ${scrolled ? "scrolled" : ""}`}>
@@ -270,8 +287,10 @@ export default function App() {
       <div className="footer-map"><iframe title="Aqua Dreamland location" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Aqua+Dreamland,28.0703106,76.1502749&z=16&output=embed"/></div>
       <footer><div className="footer-inner"><div><div className="footer-brand">Aqua Dreamland</div><p>Aquariums, décor, gifts and little things that make your space feel alive.</p></div><div className="footer-links"><span><MapPin size={14}/> Rewari Road, Neerpur Road, Narnaul, Haryana 123001</span><span><Phone size={14}/> +91 7015280545</span><span>© 2026 Aqua Dreamland</span></div></div></footer>
 
-      {cartOpen && <div className="overlay" onClick={() => setCartOpen(false)}><div className="drawer" onClick={e => e.stopPropagation()}><div className="drawer-head"><span className="sg" style={{fontWeight:700,fontSize:17}}>{checkoutStep === "cart" ? "Your Cart" : checkoutStep === "details" ? "Delivery Details" : checkoutStep === "payment" ? "Payment" : "Order Placed"}</span><button className="icon-btn" onClick={() => setCartOpen(false)}><X size={20}/></button></div><div className="drawer-body">{checkoutStep === "cart" && (cartItems.length ? cartItems.map(i => <div className="drawer-item" key={i.id}><div><div style={{fontWeight:700,fontSize:13}}>{i.name}</div><div style={{fontSize:11.5,color:C.muted}}>{priceLabel(i)} × {i.qty}</div></div><div className="qty"><button onClick={() => changeQty(i.id,-1)}><Minus size={12}/></button><span style={{fontSize:13}}>{i.qty}</span><button onClick={() => changeQty(i.id,1)}><Plus size={12}/></button></div></div>) : <div className="empty">Your cart is empty. Add something you love.</div>)}{checkoutStep === "details" && <form id="checkout-form" className="form" onSubmit={placeOrder}><label>Full name<input required value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label><label>Phone number<input required value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/></label><label>Delivery address<textarea required rows={4} value={form.address} onChange={e=>setForm({...form,address:e.target.value})}/></label></form>}{checkoutStep === "payment" && <div style={{textAlign:"center",padding:"10px 4px"}}><div style={{fontSize:13,color:C.muted,marginBottom:4}}>Amount to pay</div><div className="sg" style={{fontWeight:800,fontSize:32,marginBottom:18}}>{money(cartTotal)}</div><button className="primary" onClick={payViaUpi} style={{width:"100%",justifyContent:"center",background:`linear-gradient(135deg,${C.aqua},${C.aqua2})`,border:0,marginBottom:12}}>Pay via UPI (PhonePe / GPay) <ArrowUpRight size={16}/></button><p style={{fontSize:11.5,color:C.muted,lineHeight:1.6,marginBottom:16}}>Tapping this opens your UPI app with the amount pre-filled. Complete the payment, then confirm below.</p><button className="secondary" onClick={confirmPaid} style={{width:"100%",justifyContent:"center",color:C.navy,border:`1px solid ${C.line}`,background:"#fff"}}><Check size={16}/> I've completed the payment</button></div>}{checkoutStep === "done" && <div style={{textAlign:"center",padding:"45px 12px"}}><div style={{width:56,height:56,borderRadius:"50%",background:C.aqua,display:"grid",placeItems:"center",margin:"0 auto 16px"}}><Check size={28}/></div><div className="sg" style={{fontWeight:700,fontSize:18}}>Thanks, {form.name.split(" ")[0] || "there"}!</div><p style={{fontSize:13,color:C.muted,lineHeight:1.6,marginBottom:22}}>Your order for {money(orderTotal)} has been sent to us on WhatsApp. We'll reach out on {form.phone} to confirm.</p><button className="primary" onClick={() => {setCartOpen(false);setCheckoutStep("cart")}} style={{width:"100%",justifyContent:"center",background:`linear-gradient(135deg,${C.aqua},${C.aqua2})`,border:0}}>Continue Shopping <ChevronRight size={16}/></button></div>}
+      {cartOpen && <div className="overlay" onClick={() => setCartOpen(false)}><div className="drawer" onClick={e => e.stopPropagation()}><div className="drawer-head"><span className="sg" style={{fontWeight:700,fontSize:17}}>{checkoutStep === "cart" ? "Your Cart" : checkoutStep === "details" ? "Delivery Details" : checkoutStep === "payment" ? "Payment" : "Order Placed"}</span><button className="icon-btn" onClick={() => setCartOpen(false)}><X size={20}/></button></div><div className="drawer-body">{checkoutStep === "cart" && (cartItems.length ? cartItems.map(i => <div className="drawer-item" key={i.id}><div><div style={{fontWeight:700,fontSize:13}}>{i.name}</div><div style={{fontSize:11.5,color:C.muted}}>{priceLabel(i)} × {i.qty}</div></div><div className="qty"><button onClick={() => changeQty(i.id,-1)}><Minus size={12}/></button><span style={{fontSize:13}}>{i.qty}</span><button onClick={() => changeQty(i.id,1)}><Plus size={12}/></button></div></div>) : <div className="empty">Your cart is empty. Add something you love.</div>)}{checkoutStep === "details" && <form id="checkout-form" className="form" onSubmit={placeOrder}><label>Full name<input required value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label><label>Phone number<input required value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/></label><label>Email address<input type="email" required value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/></label><label>Delivery address<textarea required rows={4} value={form.address} onChange={e=>setForm({...form,address:e.target.value})}/></label></form>}{checkoutStep === "payment" && <div style={{textAlign:"center",padding:"10px 4px"}}><div style={{fontSize:13,color:C.muted,marginBottom:4}}>Amount to pay</div><div className="sg" style={{fontWeight:800,fontSize:32,marginBottom:18}}>{money(cartTotal)}</div><button className="primary" onClick={payViaUpi} style={{width:"100%",justifyContent:"center",background:`linear-gradient(135deg,${C.aqua},${C.aqua2})`,border:0,marginBottom:12}}>Pay via UPI (PhonePe / GPay) <ArrowUpRight size={16}/></button><p style={{fontSize:11.5,color:C.muted,lineHeight:1.6,marginBottom:16}}>Tapping this opens your UPI app with the amount pre-filled. Complete the payment, then confirm below.</p><button className="secondary" onClick={confirmPaid} style={{width:"100%",justifyContent:"center",color:C.navy,border:`1px solid ${C.line}`,background:"#fff"}}><Check size={16}/> I've completed the payment</button></div>}{checkoutStep === "done" && <div style={{textAlign:"center",padding:"45px 12px"}}><div style={{width:56,height:56,borderRadius:"50%",background:C.aqua,display:"grid",placeItems:"center",margin:"0 auto 16px"}}><Check size={28}/></div><div className="sg" style={{fontWeight:700,fontSize:18}}>Thanks, {form.name.split(" ")[0] || "there"}!</div><p style={{fontSize:13,color:C.muted,lineHeight:1.6,marginBottom:22}}>Your order for {money(orderTotal)} has been sent to us on WhatsApp, and a confirmation has been emailed to {form.email}. We'll reach out on {form.phone} to confirm.</p><button className="primary" onClick={() => {setCartOpen(false);setCheckoutStep("cart")}} style={{width:"100%",justifyContent:"center",background:`linear-gradient(135deg,${C.aqua},${C.aqua2})`,border:0}}>Continue Shopping <ChevronRight size={16}/></button></div>}
         {(checkoutStep === "cart" || checkoutStep === "details" || checkoutStep === "payment") && <div className="trust-strip"><span><CreditCard size={14}/> Prepaid Order</span><span><RotateCcw size={14}/> Easy Returns</span><span><ShieldCheck size={14}/> Secure UPI</span></div>}</div>{(checkoutStep === "cart" || checkoutStep === "details") && <div className="drawer-foot"><div style={{display:"flex",justifyContent:"space-between",marginBottom:13}}><span style={{color:C.muted,fontSize:13}}>Total</span><strong className="sg">{money(cartTotal)}</strong></div>{checkoutStep === "cart" ? <button className="primary" disabled={!cartItems.length} onClick={() => setCheckoutStep("details")} style={{width:"100%",justifyContent:"center",background:cartItems.length?`linear-gradient(135deg,${C.aqua},${C.aqua2})`:`#ccd5d2`,border:0}}>Proceed to Checkout <ChevronRight size={16}/></button> : <button className="primary" type="submit" form="checkout-form" style={{width:"100%",justifyContent:"center",background:C.navy,color:"#fff",border:0}}>Continue to Payment</button>}</div>}</div></div>}
+
+      {toast && <div className="toast"><Check size={16}/> {toast}</div>}
 
       <a className="whatsapp-float" href="https://wa.me/917015280545" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
         <MessageCircle size={27} />
