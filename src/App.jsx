@@ -243,7 +243,7 @@ export default function App() {
         </Reveal>
 
         <section id="featured" className="section featured">
-          <div className="section-head centered"><div><div className="eyebrow pill"><Sparkles size={11}/> Our Collection</div><h2 className="section-title"><Waves size={22} className="wave-deco"/> Discover Our Bestsellers <Waves size={22} className="wave-deco"/></h2><p className="section-copy center">Start simple or go all-in. These are the aquarium sizes customers can shop right now.</p></div></div>
+          <div className="section-head centered"><div><div className="eyebrow pill"><Sparkles size={11}/> Our Collection</div><h2 className="section-title"><Waves size={22} className="wave-deco"/> Dive Into Our Favorites <Waves size={22} className="wave-deco"/></h2><p className="section-copy center">Start simple or go all-in. These are the aquarium sizes customers can shop right now.</p></div></div>
           <Reveal className="product-grid">{featured.map(p => <ProductCard key={p.id} p={p} cart={cart} addToCart={addToCart} changeQty={changeQty} justAdded={justAdded}/>)}</Reveal>
         </section>
 
