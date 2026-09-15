@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect, useRef } from "react";
 import {
   ShoppingCart, X, Plus, Minus, Check, ChevronRight, Waves,
   Fish, Flower2, Gem, Heart, MapPin, Phone, Search, Sparkles,
-  ShieldCheck, Truck, Leaf, Menu, ArrowUpRight, MessageCircle, Star, ShoppingBag, LayoutGrid, Gift, CreditCard, MousePointer2, ChevronDown, RotateCcw, Instagram
+  ShieldCheck, Truck, Leaf, Menu, ArrowUpRight, MessageCircle, Star, ShoppingBag, LayoutGrid, Gift, CreditCard, MousePointer2, ChevronDown, RotateCcw
 } from "lucide-react";
 
 const C = {
@@ -329,10 +329,7 @@ export default function App() {
         .gallery:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(18,215,230,.14),transparent 32%),radial-gradient(circle at 85% 75%,rgba(177,74,255,.14),transparent 34%);pointer-events:none}
         .gallery .section-head,.gallery .gallery-grid{position:relative;z-index:1}
         .gallery .section-copy{color:#9bb8ba}
-        .ig-follow{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(18,215,230,.35);background:rgba(18,215,230,.08);color:#fff;border-radius:999px;padding:10px 18px;font-weight:800;font-size:13px;transition:.25s ease;white-space:nowrap}
-        .ig-follow:hover{transform:translateY(-2px);background:rgba(18,215,230,.16);border-color:rgba(18,215,230,.6)}
-        .ig-follow svg{color:${C.aqua}}
-        .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+                .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
         .gallery-item{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:1/1;border:1px solid rgba(173,239,240,.18);background:#07202f;box-shadow:0 14px 34px rgba(0,0,0,.25);transition:.3s}
         .gallery-item:hover{transform:translateY(-5px);border-color:rgba(18,215,230,.55);box-shadow:0 22px 46px rgba(0,0,0,.35)}
         .gallery-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
@@ -418,18 +415,16 @@ export default function App() {
           <Reveal>
             <div className="section-head centered" style={{display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left",flexWrap:"wrap",gap:16}}>
               <div>
-                <div className="eyebrow pill"><Instagram size={11}/> From Our Instagram</div>
+                <div className="eyebrow pill"><Sparkles size={11}/> Real Setups</div>
                 <h2 className="section-title">Tanks We've Built</h2>
                 <p className="section-copy">A peek at real setups, fish and décor from our shop and customer homes.</p>
               </div>
-              <a className="ig-follow" href="https://www.instagram.com/aqua_dreamland" target="_blank" rel="noopener noreferrer"><Instagram size={16}/> Follow @aqua_dreamland</a>
             </div>
             <div className="gallery-grid">
               {GALLERY_IMAGES.map(img => (
-                <a key={img.id} className="gallery-item" href="https://www.instagram.com/aqua_dreamland" target="_blank" rel="noopener noreferrer">
+                <div key={img.id} className="gallery-item">
                   <img src={img.src} alt={img.alt} loading="lazy" />
-                  <div className="gallery-overlay"><Instagram size={13}/> View on Instagram</div>
-                </a>
+                </div>
               ))}
             </div>
           </Reveal>
