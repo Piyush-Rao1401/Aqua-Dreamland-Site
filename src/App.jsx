@@ -39,6 +39,7 @@ const FAQS = [
   { q: "Do your aquariums come with any warranty?", a: "Yes — every tank we build in-house is checked for leaks and fitting before it leaves our shop. If any manufacturing issue shows up after setup, message us on WhatsApp and we'll repair or replace it." },
   { q: "How far do you deliver?", a: "We deliver and set up aquariums across Narnaul and nearby areas. For locations further out, message us your pin code on WhatsApp and we'll confirm if delivery is possible." },
   { q: "How fast do you reply on WhatsApp?", a: "We usually reply within 30 minutes during shop hours. For custom orders, feel free to call us directly if it's urgent." },
+  { q: "What if a fish doesn't survive after I bring it home?", a: "Every fish is healthy and active when it leaves our shop — we check each one before handover. Once a fish reaches your home, its health depends a lot on tank conditions and acclimatization, so we're unable to offer replacement or refund after delivery. To give your fish the best start: float the bag in your tank for 15–20 minutes before releasing it, and avoid mixing tank water with the bag water directly. Feel free to ask us on WhatsApp for tips suited to your specific fish." },
 ];
 
 const PRODUCTS = [
