@@ -79,6 +79,87 @@ const GALLERY_IMAGES = [
 
 const GOOGLE_REVIEWS_URL = "https://www.google.com/maps/search/?api=1&query=Aqua+Dreamland+Narnaul&query_place_id=ChIJV5sQW_-3EjkRyPqDeYN0Suw";
 
+const BLOG_POSTS = [
+  {
+    id: "cycling-new-tank",
+    tag: "Beginner Guide",
+    title: "How to Cycle a New Aquarium the Right Way",
+    excerpt: "Skip this step and most first fish don't survive the month. Here's what \"cycling\" means and how long to actually wait.",
+    readTime: "4 min read",
+    icon: Waves,
+    body: [
+      { h: "What cycling actually does", p: "A brand-new tank has no bacteria yet to break down fish waste. Cycling means growing that bacteria colony before you add any fish, so ammonia doesn't build up and poison them in the first week." },
+      { h: "The simple way to do it", p: "Fill the tank, treat the water with a dechlorinator, and run the filter for 7–10 days before adding fish. In a hurry? Ask us for a small piece of filter media from an already-running tank — it seeds the bacteria much faster." },
+      { h: "How to tell it's ready", p: "The water should look clear with no strong smell. If you're using a test kit, ammonia and nitrite should read at or near zero. When unsure, message us your setup on WhatsApp and we'll tell you if it's safe to add fish yet." },
+    ],
+  },
+  {
+    id: "water-change-signs",
+    tag: "Maintenance",
+    title: "5 Signs Your Fish Tank Needs a Water Change",
+    excerpt: "Cloudy water is the obvious one — but by the time you see that, your fish have usually been stressed for days.",
+    readTime: "3 min read",
+    icon: RotateCcw,
+    body: [
+      { h: "Look at the water and the glass", p: "Cloudy or yellow-tinted water, a film on the surface, or algae creeping across the glass faster than usual are all signs waste has built up. A light haze after cleaning is normal; a consistent cloud is not." },
+      { h: "Watch how your fish behave", p: "Fish gasping at the surface, staying near the filter outlet, or looking unusually dull and inactive are often reacting to poor water quality before anything looks visibly wrong to you." },
+      { h: "The fix is simple, not dramatic", p: "Change about 20–25% of the water every 1–2 weeks rather than the whole tank at once — always dechlorinated first. A sudden 100% change removes the good bacteria too and stresses fish more than the dirty water did." },
+    ],
+  },
+  {
+    id: "beginner-fish-picks",
+    tag: "Fish Picks",
+    title: "Best Beginner Fish for a 1–2 ft Tank",
+    excerpt: "Not every fish that looks nice in the shop belongs in a small starter tank. Here's what actually does well.",
+    readTime: "4 min read",
+    icon: Fish,
+    body: [
+      { h: "Hardy, easy starters", p: "Guppies, mollies, and small tetras handle beginner mistakes better than most fish and add color quickly. A single betta also does well alone in a 1 ft tank — they don't need company and prefer calmer water." },
+      { h: "Mind the adult size", p: "A goldfish or oscar might be tiny in the shop, but they grow fast and need a lot more space than a 1–2 ft tank offers long-term. Ask us about the adult size before you fall for a cute juvenile." },
+      { h: "Compatibility matters more than looks", p: "Bettas don't share space well with other bettas or bright, fin-nipping fish. If you're mixing species, tell us your tank size and we'll suggest a combination that won't stress or fight." },
+    ],
+  },
+  {
+    id: "why-plants-die",
+    tag: "Planted Tanks",
+    title: "Why Your Aquarium Plants Keep Dying",
+    excerpt: "It's almost never \"bad luck\" — it's usually one of three things, and all three are easy to fix.",
+    readTime: "3 min read",
+    icon: Leaf,
+    body: [
+      { h: "Wrong substrate", p: "Regular gravel looks fine but gives plant roots nothing to feed on. A thin layer of proper planted-tank substrate under the gravel makes the biggest difference of anything on this list." },
+      { h: "Not enough light, or too much", p: "Low-light plants (java fern, anubias, moss) survive under standard aquarium lighting. Anything labelled \"high light\" will slowly die back under a dim setup — check the label before you buy, not after." },
+      { h: "Trimming too little, too late", p: "Dying lower leaves are normal as a plant grows taller — trim them off instead of leaving them to rot in the substrate, which fouls the water and can drag healthy leaves down with it." },
+    ],
+  },
+  {
+    id: "how-often-to-feed",
+    tag: "Feeding",
+    title: "How Often Should You Feed Your Fish?",
+    excerpt: "Overfeeding — not underfeeding — is the single most common reason fish get sick in a home tank.",
+    readTime: "2 min read",
+    icon: Sparkles,
+    body: [
+      { h: "The 2–3 minute rule", p: "Feed a small amount once or twice a day — only what your fish can finish in 2–3 minutes. Whatever's left over sinks, rots, and quietly wrecks your water quality over the next few days." },
+      { h: "Skip a day, it's fine", p: "Adult fish can comfortably go a day without food. If you're travelling or just forgot, there's no need to overcompensate with a bigger feed the next day — stick to the normal amount." },
+      { h: "Watch the fish, not the clock", p: "A fish that's constantly pecking at the gravel or glass is usually hungry; one that ignores food dropped in is usually overfed. Adjust the amount, not just the schedule." },
+    ],
+  },
+  {
+    id: "planted-tank-setup",
+    tag: "Planted Tanks",
+    title: "Setting Up a Planted Tank: A Simple Guide",
+    excerpt: "A planted tank looks harder than it is. Get these three layers right and the rest mostly takes care of itself.",
+    readTime: "4 min read",
+    icon: Flower2,
+    body: [
+      { h: "Start with the base layer", p: "A thin layer of nutrient substrate at the bottom, then regular gravel or sand on top to hold it down. This alone solves most of the \"why won't my plants grow\" problems people run into." },
+      { h: "Pick plants that forgive mistakes", p: "Java fern, anubias, and vallisneria root easily, tolerate average lighting, and don't need injected CO2 to survive — a good starting point before you invest in anything more advanced." },
+      { h: "Keep the light on a schedule", p: "6–8 hours a day on a consistent timer beats leaving it on all day. More light without more nutrients just feeds algae, not your plants." },
+    ],
+  },
+];
+
 const CAT_META = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
 
 const LEGAL = {
@@ -190,6 +271,7 @@ export default function App() {
   const [orderSnapshot, setOrderSnapshot] = useState([]);
   const [toast, setToast] = useState(null);
   const [legalTab, setLegalTab] = useState(null);
+  const [blogPost, setBlogPost] = useState(null);
   const [openFaq, setOpenFaq] = useState(0);
   const showToast = msg => { setToast(msg); clearTimeout(window.__toastTimer); window.__toastTimer = setTimeout(() => setToast(null), 2600); };
   const [form, setForm] = useState({ name: "", phone: "", email: "", address: "" });
@@ -214,6 +296,24 @@ export default function App() {
   const [quickView, setQuickView] = useState(null);
   const closeQuickView = () => setQuickView(null);
   const relatedFor = p => p ? PRODUCTS.filter(x => x.cat === p.cat && x.id !== p.id).slice(0, 4) : [];
+
+  // Accessibility: activate onClick handlers on non-button elements via Enter/Space too
+  const onActivateKey = fn => e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } };
+
+  // Accessibility: Escape closes whichever overlay/modal is currently open
+  useEffect(() => {
+    const anyOpen = cartOpen || legalTab || quickView || blogPost;
+    if (!anyOpen) return;
+    const onKey = e => {
+      if (e.key !== "Escape") return;
+      if (quickView) return setQuickView(null);
+      if (blogPost) return setBlogPost(null);
+      if (legalTab) return setLegalTab(null);
+      if (cartOpen) return setCartOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [cartOpen, legalTab, quickView, blogPost]);
 
   const [lightbox, setLightbox] = useState(null);
   useEffect(() => {
@@ -306,6 +406,10 @@ export default function App() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
         *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:${C.cream};color:${C.ink};font-family:Manrope,sans-serif}.sg{font-family:'Space Grotesk',sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}.site{min-height:100vh;overflow:hidden}
+        :focus-visible{outline:2.5px solid ${C.aqua};outline-offset:2px;border-radius:4px}
+        .skip-link{position:fixed;top:-60px;left:12px;z-index:100;background:${C.navy};color:#fff;padding:12px 18px;border-radius:10px;font-weight:800;font-size:13px;text-decoration:none;transition:top .2s ease}
+        .skip-link:focus{top:12px}
+        @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
         .nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid rgba(4,19,33,.08);color:${C.navy};transition:background .3s ease,backdrop-filter .3s ease,border-color .3s ease,box-shadow .3s ease}.nav.scrolled{background:rgba(255,255,255,.97);backdrop-filter:blur(20px);border-bottom-color:rgba(4,19,33,.12);box-shadow:0 12px 34px rgba(0,0,0,.08)}.nav-inner{max-width:1620px;margin:auto;padding:11px 24px;display:flex;align-items:center;gap:30px}.brand{display:flex;align-items:center;gap:11px;min-width:245px}
         .brand-name{font:700 22px 'Space Grotesk';letter-spacing:-.035em;color:${C.navy}}.brand-accent{background:linear-gradient(90deg,${C.pink},${C.purple2},${C.aqua});-webkit-background-clip:text;background-clip:text;color:transparent}.brand-sub{font-size:10px;color:#5a7275;letter-spacing:.14em;text-transform:uppercase;margin-top:2px}.navlinks{display:flex;align-items:center;gap:7px;flex:1;justify-content:center}.navlinks button{border:0;background:transparent;color:#4a6265;padding:12px 13px;border-radius:10px;font-weight:600;font-size:14px;transition:.2s;position:relative}.navlinks button:hover,.navlinks button.active{color:${C.navy};background:rgba(4,19,33,.05)}.navlinks button:after{content:"";position:absolute;left:13px;right:13px;bottom:6px;height:2px;background:linear-gradient(90deg,${C.pink},${C.purple2});border-radius:2px;transform:scaleX(0);transform-origin:center;transition:transform .3s ease}.navlinks button:hover:after{transform:scaleX(.5)}.navlinks button.active:after{transform:scaleX(1)}.cart-btn{border:1px solid rgba(255,79,216,.5);background:linear-gradient(135deg,#e83fc0,#b14aff);color:#fff;border-radius:13px;padding:11px 16px;font-weight:800;display:flex;align-items:center;gap:8px;box-shadow:0 8px 28px rgba(255,79,216,.22);position:relative}.cart-badge{position:absolute;top:-7px;right:-7px;min-width:19px;height:19px;padding:0 4px;border-radius:999px;background:${C.green};color:#fff;font-size:10.5px;font-weight:800;display:grid;place-items:center;border:2px solid #fff}
         .nav-search-btn{border:1px solid rgba(4,19,33,.12);background:rgba(4,19,33,.03);color:${C.pink};width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex:none;transition:.2s}.nav-search-btn:hover{background:rgba(255,79,216,.1);color:${C.navy}}
@@ -492,6 +596,24 @@ export default function App() {
         .lb-count{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);color:#cfe6e5;font-size:12.5px;font-weight:700;z-index:5}
         @media(max-width:700px){.lb-nav{width:38px;height:38px}.lb-prev{left:10px}.lb-next{right:10px}.lb-close{top:14px;right:14px}}
 
+        .blog{background:#fff}
+        .blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}
+        .blog-card{background:${C.cream};border:1px solid ${C.line};border-radius:17px;padding:22px;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+        .blog-card:hover{transform:translateY(-5px);box-shadow:0 18px 38px rgba(5,37,45,.1);border-color:#b8e5e3;background:#fff}
+        .blog-icon{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,rgba(18,215,230,.14),rgba(177,74,255,.12));color:${C.aqua};display:grid;place-items:center;margin-bottom:14px}
+        .blog-tag{display:inline-block;background:#e8fbf9;color:#087e83;border-radius:999px;padding:4px 10px;font-size:10px;font-weight:800;letter-spacing:.02em}
+        .blog-card h3{font:700 16px/1.35 'Space Grotesk';margin:12px 0 8px;color:${C.navy}}
+        .blog-card p{font-size:12.5px;color:#718084;line-height:1.6;margin:0}
+        .blog-meta{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px dashed ${C.line}}
+        .blog-meta>span:first-child{font-size:11px;color:#95a5a7;font-weight:700}
+        .blog-read{color:#0a737d;font-size:11.5px;font-weight:800;display:flex;align-items:center;gap:3px}
+        .blog-modal .legal-head h3{font-size:19px;line-height:1.3}
+        .blog-cta{margin-top:6px;padding:14px 16px;border-radius:13px;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.25);font-size:12.5px;color:#2c5a3f;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+        .blog-cta svg{color:#25D366;flex:none}
+        .blog-cta a{color:#1a7a3e;font-weight:800;text-decoration:underline}
+        @media(max-width:900px){.blog-grid{grid-template-columns:1fr 1fr}}
+        @media(max-width:700px){.blog-grid{grid-template-columns:1fr}}
+
         .checkout-steps{display:flex;align-items:flex-start;justify-content:center;margin-bottom:22px}
         .cstep{display:flex;flex-direction:column;align-items:center;gap:6px;width:110px;position:relative}
         .cstep-circle{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:800 11.5px 'Space Grotesk';border:2px solid ${C.line};color:#95a5a7;background:#fff;z-index:1}
@@ -505,24 +627,27 @@ export default function App() {
         .cstep.done:before{background:${C.green}}
       `}</style>
 
+      <a className="skip-link" href="#main-content">Skip to content</a>
+
       <header className={`nav ${scrolled ? "scrolled" : ""}`}>
         <div className="nav-inner">
           <div className="brand">
             <div><div className="brand-name">Aqua <span className="brand-accent">Dreamland</span></div><div className="brand-sub">Aquarium • Décor • More</div></div>
           </div>
-          <button className={`mobile-menu ${mobileNav ? "open" : ""}`} onClick={() => setMobileNav(v => !v)} aria-label="Menu"><span className="bar b1"/><span className="bar b2"/><span className="bar b3"/></button>
+          <button className={`mobile-menu ${mobileNav ? "open" : ""}`} onClick={() => setMobileNav(v => !v)} aria-label="Menu" aria-expanded={mobileNav}><span className="bar b1"/><span className="bar b2"/><span className="bar b3"/></button>
           <nav className={`navlinks ${mobileNav ? "mobile" : ""}`}>
             <button className="active" onClick={() => {scrollTo("home");setMobileNav(false)}}>Home</button>
             {CATEGORIES.map(c => <button key={c.id} onClick={() => {setActiveCat(c.id);scrollTo("shop");setMobileNav(false)}}>{c.label}</button>)}
+            <button onClick={() => {scrollTo("blog");setMobileNav(false)}}>Care Tips</button>
             <button onClick={() => {scrollTo("story");setMobileNav(false)}}>Our Story</button>
           </nav>
           <div className={`nav-search ${navSearchOpen ? "open" : ""}`}><Search size={15}/><input placeholder="Search products…" value={query} onChange={e => setQuery(e.target.value)} onKeyDown={e => {if(e.key==="Enter"){scrollTo("shop");setNavSearchOpen(false)}}} autoFocus={navSearchOpen}/>{query && <button className="search-clear" onClick={() => setQuery("")} aria-label="Clear search"><X size={13}/></button>}</div>
-          <button className="nav-search-btn" onClick={() => setNavSearchOpen(v => !v)} aria-label="Search"><Search size={18}/></button>
+          <button className="nav-search-btn" onClick={() => setNavSearchOpen(v => !v)} aria-label="Search" aria-expanded={navSearchOpen}><Search size={18}/></button>
           <button className={`cart-btn ${justAdded ? "add-flash" : ""}`} onClick={openCart}><ShoppingCart size={17}/> Cart{cartCount > 0 && <span className="cart-badge">{cartCount}</span>}</button>
         </div>
       </header>
 
-      <main>
+      <main id="main-content">
         <section id="home" className="hero">
           <div className="hero-bg"/>
           <div className="bubbles">
@@ -543,11 +668,11 @@ export default function App() {
             </div>
             <div className="hero-fish-banner"><img src="/betta-hero-centered.jpg" alt="Betta fish"/></div>
             <div className="hero-cards">
-              {CATEGORIES.map((c, i) => {const Icon=c.icon;const col=CAT_COLOR[c.id]; return <div key={c.id} className="hero-card" onClick={() => {setActiveCat(c.id);scrollTo("shop")}} role="button" tabIndex={0}><div className="hc-body"><div className="hc-top"><div className="hc-icon" style={{background:`${col}26`,borderColor:`${col}55`,color:col}}><Icon size={19}/></div><div className="hc-arrow" style={{background:`${col}26`,color:col}}><ChevronRight size={16}/></div></div><h3>{c.label}</h3><p>{c.blurb}</p></div><div className="hc-image"><ProductArt cat={c.id} compact/></div></div>})}
+              {CATEGORIES.map((c, i) => {const Icon=c.icon;const col=CAT_COLOR[c.id]; return <div key={c.id} className="hero-card" onClick={() => {setActiveCat(c.id);scrollTo("shop")}} onKeyDown={onActivateKey(() => {setActiveCat(c.id);scrollTo("shop")})} role="button" tabIndex={0}><div className="hc-body"><div className="hc-top"><div className="hc-icon" style={{background:`${col}26`,borderColor:`${col}55`,color:col}}><Icon size={19}/></div><div className="hc-arrow" style={{background:`${col}26`,color:col}}><ChevronRight size={16}/></div></div><h3>{c.label}</h3><p>{c.blurb}</p></div><div className="hc-image"><ProductArt cat={c.id} compact/></div></div>})}
             </div>
           </div>
           <svg className="wave-bottom" viewBox="0 0 1200 55" preserveAspectRatio="none"><path d="M0 28 C160 58 340 0 580 24 C830 51 1020 8 1200 27 L1200 55 L0 55Z"/></svg>
-          <div className="explore-more" onClick={() => scrollTo("featured")}><MousePointer2 size={17}/><span>Explore More</span><ChevronDown size={14}/></div>
+          <div className="explore-more" onClick={() => scrollTo("featured")} onKeyDown={onActivateKey(() => scrollTo("featured"))} role="button" tabIndex={0}><MousePointer2 size={17}/><span>Explore More</span><ChevronDown size={14}/></div>
         </section>
 
         <Reveal className="trust">
@@ -563,12 +688,14 @@ export default function App() {
 
         <section className="section categories">
           <div className="section-head"><div><div className="eyebrow">Shop by category</div><h2 className="section-title">More than just aquariums.</h2><p className="section-copy">Bring the same underwater personality into the rest of your space.</p></div></div>
-          <Reveal className="category-grid">{CATEGORIES.map((c,i) => {const Icon=c.icon;const col=CAT_COLOR[c.id];return <div key={c.id} className={`category-card ${["cat-a","cat-b","cat-c","cat-d"][i]}`} style={{"--cat-glow":col}} onClick={() => {setActiveCat(c.id);scrollTo("shop")}}><div className="cat-icon" style={{background:`${col}33`,borderColor:`${col}66`,color:col}}><Icon size={20}/></div><div><h3>{c.label}</h3><p>{c.blurb}</p><div className="cat-link" style={{color:col}}>Explore collection <ChevronRight size={14}/></div></div></div>})}</Reveal>
+          <Reveal className="category-grid">{CATEGORIES.map((c,i) => {const Icon=c.icon;const col=CAT_COLOR[c.id];return <div key={c.id} className={`category-card ${["cat-a","cat-b","cat-c","cat-d"][i]}`} style={{"--cat-glow":col}} onClick={() => {setActiveCat(c.id);scrollTo("shop")}} onKeyDown={onActivateKey(() => {setActiveCat(c.id);scrollTo("shop")})} role="button" tabIndex={0}><div className="cat-icon" style={{background:`${col}33`,borderColor:`${col}66`,color:col}}><Icon size={20}/></div><div><h3>{c.label}</h3><p>{c.blurb}</p><div className="cat-link" style={{color:col}}>Explore collection <ChevronRight size={14}/></div></div></div>})}</Reveal>
         </section>
 
         <section className="section how-it-works"><Reveal><div className="section-head centered"><div><div className="eyebrow pill"><Sparkles size={11}/> Simple Process</div><h2 className="section-title">How Custom Orders Work</h2><p className="section-copy center">From your first message to a tank set up in your home — here's what to expect.</p></div></div><div className="hiw-grid"><div className="hiw-card"><div className="hiw-num">1</div><div className="hiw-icon"><MessageCircle size={22}/></div><h3>Enquire</h3><p>Message us on WhatsApp with your size, budget, and style — we reply fast.</p></div><div className="hiw-arrow"><ChevronRight size={20}/></div><div className="hiw-card"><div className="hiw-num">2</div><div className="hiw-icon"><Sparkles size={22}/></div><h3>Design</h3><p>We suggest the best layout, décor, and fish to match your space.</p></div><div className="hiw-arrow"><ChevronRight size={20}/></div><div className="hiw-card"><div className="hiw-num">3</div><div className="hiw-icon"><Fish size={22}/></div><h3>Build</h3><p>Your tank is built and glazed in-house, exactly to your chosen size.</p></div><div className="hiw-arrow"><ChevronRight size={20}/></div><div className="hiw-card"><div className="hiw-num">4</div><div className="hiw-icon"><Truck size={22}/></div><h3>Deliver</h3><p>We deliver, set it up, and walk you through the first-day care.</p></div></div></Reveal></section>
 
         <section className="section care"><Reveal><div className="section-head centered"><div><div className="eyebrow pill"><Heart size={11}/> Care Tips</div><h2 className="section-title">Aquarium Care Guides</h2><p className="section-copy center">A few basics to keep your tank healthy, from our own experience running the shop.</p></div></div><div className="care-grid"><div className="care-card"><div className="care-icon"><Fish size={20}/></div><h3>Setting Up a New Tank</h3><p>Place your tank away from direct sunlight to avoid algae growth. Always treat tap water with a dechlorinator before adding it — standing water alone doesn't reliably remove chloramine, which many water supplies contain.</p></div><div className="care-card"><div className="care-icon"><Heart size={20}/></div><h3>Feeding Your Fish</h3><p>Feed small amounts once or twice a day — only what your fish can finish in 2–3 minutes. Overfeeding is the most common cause of cloudy water and sick fish.</p></div><div className="care-card"><div className="care-icon"><Waves size={20}/></div><h3>Water Care Basics</h3><p>Change about 20–25% of the water every 1–2 weeks rather than the whole tank at once, and always dechlorinate the fresh water first. Sudden full changes stress fish more than gradual, partial ones.</p></div><div className="care-card"><div className="care-icon"><Sparkles size={20}/></div><h3>Introducing New Fish</h3><p>Float the sealed bag in your tank for 15–20 minutes before releasing your fish, so it adjusts to the water temperature gradually. Avoid mixing bag water into the tank.</p></div></div></Reveal></section>
+
+        <section id="blog" className="section blog"><Reveal><div className="section-head centered"><div><div className="eyebrow pill"><Sparkles size={11}/> From the Shop</div><h2 className="section-title">Fish &amp; Care Tips</h2><p className="section-copy center">Practical, no-nonsense advice from running an aquarium shop — not copy-pasted internet tips.</p></div></div><div className="blog-grid">{BLOG_POSTS.map(post => {const Icon=post.icon;return <div key={post.id} className="blog-card" onClick={() => setBlogPost(post)} onKeyDown={onActivateKey(() => setBlogPost(post))} role="button" tabIndex={0}><div className="blog-icon"><Icon size={19}/></div><span className="blog-tag">{post.tag}</span><h3>{post.title}</h3><p>{post.excerpt}</p><div className="blog-meta"><span>{post.readTime}</span><span className="blog-read">Read article <ChevronRight size={13}/></span></div></div>})}</div></Reveal></section>
 
         <section id="story" className="section story">
           <div className="bubbles">{[...Array(7)].map((_, i) => {const size = 6 + (i % 4) * 5; return <span key={i} className="bubble" style={{left: `${(i * 13 + 6) % 100}%`, width: size, height: size, animationDuration: `${11 + (i % 4) * 2.5}s`, animationDelay: `${-(i * 2.1)}s`}} />;})}</div>
@@ -590,7 +717,7 @@ export default function App() {
             </div>
             <div className="gallery-grid">
               {GALLERY_IMAGES.map((img, i) => (
-                <div key={img.id} className="gallery-item" onClick={() => setLightbox(i)} role="button" tabIndex={0}>
+                <div key={img.id} className="gallery-item" onClick={() => setLightbox(i)} onKeyDown={onActivateKey(() => setLightbox(i))} role="button" tabIndex={0} aria-label={`View larger: ${img.alt}`}>
                   <img src={img.src} alt={img.alt} loading="lazy" />
                   <div className="gallery-overlay"><Search size={13}/> View larger</div>
                 </div>
@@ -614,14 +741,16 @@ export default function App() {
       <div className="footer-map"><iframe title="Aqua Dreamland location" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Aqua+Dreamland,28.0703106,76.1502749&z=16&output=embed"/></div>
       <footer><div className="footer-inner"><div><div className="footer-brand">Aqua Dreamland</div><p>Aquariums, décor, gifts and little things that make your space feel alive.</p><div className={`hours-badge ${shopStatus.isOpen ? "open" : "closed"}`}><span className="status-dot"/> {shopStatus.isOpen ? "Open Now" : "Closed Now"} · Today {shopStatus.today}</div><div className="hours-note">Mon–Sat: 7:00 AM – 9:00 PM · Sun: 8:00 AM – 8:00 PM</div></div><div className="footer-links"><span><MapPin size={14}/> Rewari Road, Neerpur Road, Narnaul, Haryana 123001</span><span><Phone size={14}/> +91 7015280545</span><button className="legal-link" onClick={() => setLegalTab("terms")}>Terms</button><button className="legal-link" onClick={() => setLegalTab("privacy")}>Privacy</button><button className="legal-link" onClick={() => setLegalTab("refund")}>Returns &amp; Refunds</button><span>© 2026 Aqua Dreamland</span></div></div></footer>
 
-      {legalTab && <div className="legal-overlay" onClick={() => setLegalTab(null)}><div className="legal-modal" onClick={e => e.stopPropagation()}><div className="legal-head"><h3>{LEGAL[legalTab].label}</h3><button className="icon-btn" onClick={() => setLegalTab(null)}><X size={20}/></button></div><div className="legal-tabs">{Object.keys(LEGAL).map(k => <button key={k} className={`legal-tab ${legalTab===k?"active":""}`} onClick={() => setLegalTab(k)}>{LEGAL[k].label}</button>)}</div><div className="legal-body"><div className="legal-updated">{LEGAL[legalTab].updated}</div>{LEGAL[legalTab].body.map((b,i) => <div className="legal-block" key={i}><h4>{b.h}</h4><p>{b.p}</p></div>)}</div></div></div>}
+      {legalTab && <div className="legal-overlay" onClick={() => setLegalTab(null)} role="dialog" aria-modal="true" aria-label={LEGAL[legalTab].label}><div className="legal-modal" onClick={e => e.stopPropagation()}><div className="legal-head"><h3>{LEGAL[legalTab].label}</h3><button className="icon-btn" onClick={() => setLegalTab(null)} aria-label="Close"><X size={20}/></button></div><div className="legal-tabs">{Object.keys(LEGAL).map(k => <button key={k} className={`legal-tab ${legalTab===k?"active":""}`} onClick={() => setLegalTab(k)}>{LEGAL[k].label}</button>)}</div><div className="legal-body"><div className="legal-updated">{LEGAL[legalTab].updated}</div>{LEGAL[legalTab].body.map((b,i) => <div className="legal-block" key={i}><h4>{b.h}</h4><p>{b.p}</p></div>)}</div></div></div>}
 
-      {cartOpen && <div className="overlay" onClick={() => setCartOpen(false)}><div className="drawer" onClick={e => e.stopPropagation()}><div className="drawer-head"><span className="sg" style={{fontWeight:700,fontSize:17}}>{checkoutStep === "cart" ? "Your Cart" : checkoutStep === "details" ? "Delivery Details" : checkoutStep === "payment" ? "Payment" : "Order Placed"}</span><button className="icon-btn" onClick={() => setCartOpen(false)}><X size={20}/></button></div><div className="drawer-body">{(checkoutStep === "cart" || checkoutStep === "details" || checkoutStep === "payment") && <div className="checkout-steps"><div className={`cstep ${checkoutStep !== "cart" ? "done" : "active"}`}><div className="cstep-circle">{checkoutStep !== "cart" ? <Check size={13}/> : "1"}</div><div className="cstep-label">Cart</div></div><div className={`cstep ${checkoutStep === "payment" ? "done" : checkoutStep === "details" ? "active" : ""}`}><div className="cstep-circle">{checkoutStep === "payment" ? <Check size={13}/> : "2"}</div><div className="cstep-label">Details</div></div><div className={`cstep ${checkoutStep === "payment" ? "active" : ""}`}><div className="cstep-circle">3</div><div className="cstep-label">Payment</div></div></div>}{checkoutStep === "cart" && (cartItems.length ? cartItems.map(i => <div className="drawer-item" key={i.id}><div><div style={{fontWeight:700,fontSize:13}}>{i.name}</div><div style={{fontSize:11.5,color:C.muted}}>{priceLabel(i)} × {i.qty}</div></div><div className="qty"><button onClick={() => changeQty(i.id,-1)}><Minus size={12}/></button><span style={{fontSize:13}}>{i.qty}</span><button onClick={() => changeQty(i.id,1)}><Plus size={12}/></button></div></div>) : <div className="empty">Your cart is empty. Add something you love.</div>)}{checkoutStep === "details" && <form id="checkout-form" className="form" onSubmit={placeOrder}><label>Full name<input required value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label><label>Phone number<input required value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/></label><label>Email address<input type="email" required value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/></label><label>Delivery address<textarea required rows={4} value={form.address} onChange={e=>setForm({...form,address:e.target.value})}/></label></form>}{checkoutStep === "payment" && <div style={{textAlign:"center",padding:"10px 4px"}}><div style={{fontSize:13,color:C.muted,marginBottom:4}}>Amount to pay</div><div className="sg" style={{fontWeight:800,fontSize:32,marginBottom:10}}>{money(cartTotal)}</div><div className="pay-badges" style={{justifyContent:"center",marginBottom:18}}><img className="pay-logo" src="/payment-phonepe.png" alt="PhonePe"/><img className="pay-logo" src="/payment-googlepay.png" alt="Google Pay"/></div><button className="primary" onClick={payViaUpi} style={{width:"100%",justifyContent:"center",background:`linear-gradient(135deg,${C.aqua},${C.aqua2})`,border:0,marginBottom:12}}>Pay via UPI (PhonePe / GPay) <ArrowUpRight size={16}/></button><p style={{fontSize:11.5,color:C.muted,lineHeight:1.6,marginBottom:16}}>Tapping this opens your UPI app with the amount pre-filled. Complete the payment, then confirm below.</p><button className="secondary" onClick={confirmPaid} style={{width:"100%",justifyContent:"center",color:C.navy,border:`1px solid ${C.line}`,background:"#fff"}}><Check size={16}/> I've completed the payment</button><div className="wa-reminder"><MessageCircle size={14}/> This opens WhatsApp with your order details pre-filled — please tap <strong>Send</strong> there to notify us!</div></div>}{checkoutStep === "done" && <div style={{textAlign:"center",padding:"45px 12px"}}><div style={{width:56,height:56,borderRadius:"50%",background:C.aqua,display:"grid",placeItems:"center",margin:"0 auto 16px"}}><Check size={28}/></div><div className="sg" style={{fontWeight:700,fontSize:18,marginBottom:8}}>Thanks, {form.name.split(" ")[0] || "there"}!</div><div className="order-id">Order #{orderId}</div><div className="order-summary">{orderSnapshot.map(i => <div className="os-item" key={i.id}><span>{i.name} × {i.qty}</span><span>{money(i.price * i.qty)}</span></div>)}<div className="os-total"><span>Total</span><span>{money(orderTotal)}</span></div></div><div className="next-steps"><div className="ns-item"><span className="ns-num">1</span><span className="ns-text">Please tap <strong>Send</strong> on the WhatsApp message that opened — this notifies us of your order.</span></div><div className="ns-item"><span className="ns-num">2</span><span className="ns-text">We'll verify your payment and reply on WhatsApp, usually within <strong>30 minutes</strong> during shop hours.</span></div><div className="ns-item"><span className="ns-num">3</span><span className="ns-text">We'll confirm delivery or pickup details and get your order ready.</span></div></div><p style={{fontSize:11.5,color:C.muted,lineHeight:1.6,marginBottom:22}}>A confirmation has been emailed to {form.email}. We'll reach out on {form.phone} to confirm.</p><button className="primary" onClick={() => {setCartOpen(false);setCheckoutStep("cart")}} style={{width:"100%",justifyContent:"center",background:`linear-gradient(135deg,${C.aqua},${C.aqua2})`,border:0}}>Continue Shopping <ChevronRight size={16}/></button></div>}
+      {cartOpen && <div className="overlay" onClick={() => setCartOpen(false)} role="dialog" aria-modal="true" aria-label="Cart"><div className="drawer" onClick={e => e.stopPropagation()}><div className="drawer-head"><span className="sg" style={{fontWeight:700,fontSize:17}}>{checkoutStep === "cart" ? "Your Cart" : checkoutStep === "details" ? "Delivery Details" : checkoutStep === "payment" ? "Payment" : "Order Placed"}</span><button className="icon-btn" onClick={() => setCartOpen(false)} aria-label="Close"><X size={20}/></button></div><div className="drawer-body">{(checkoutStep === "cart" || checkoutStep === "details" || checkoutStep === "payment") && <div className="checkout-steps"><div className={`cstep ${checkoutStep !== "cart" ? "done" : "active"}`}><div className="cstep-circle">{checkoutStep !== "cart" ? <Check size={13}/> : "1"}</div><div className="cstep-label">Cart</div></div><div className={`cstep ${checkoutStep === "payment" ? "done" : checkoutStep === "details" ? "active" : ""}`}><div className="cstep-circle">{checkoutStep === "payment" ? <Check size={13}/> : "2"}</div><div className="cstep-label">Details</div></div><div className={`cstep ${checkoutStep === "payment" ? "active" : ""}`}><div className="cstep-circle">3</div><div className="cstep-label">Payment</div></div></div>}{checkoutStep === "cart" && (cartItems.length ? cartItems.map(i => <div className="drawer-item" key={i.id}><div><div style={{fontWeight:700,fontSize:13}}>{i.name}</div><div style={{fontSize:11.5,color:C.muted}}>{priceLabel(i)} × {i.qty}</div></div><div className="qty"><button onClick={() => changeQty(i.id,-1)}><Minus size={12}/></button><span style={{fontSize:13}}>{i.qty}</span><button onClick={() => changeQty(i.id,1)}><Plus size={12}/></button></div></div>) : <div className="empty">Your cart is empty. Add something you love.</div>)}{checkoutStep === "details" && <form id="checkout-form" className="form" onSubmit={placeOrder}><label>Full name<input required value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label><label>Phone number<input required value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/></label><label>Email address<input type="email" required value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/></label><label>Delivery address<textarea required rows={4} value={form.address} onChange={e=>setForm({...form,address:e.target.value})}/></label></form>}{checkoutStep === "payment" && <div style={{textAlign:"center",padding:"10px 4px"}}><div style={{fontSize:13,color:C.muted,marginBottom:4}}>Amount to pay</div><div className="sg" style={{fontWeight:800,fontSize:32,marginBottom:10}}>{money(cartTotal)}</div><div className="pay-badges" style={{justifyContent:"center",marginBottom:18}}><img className="pay-logo" src="/payment-phonepe.png" alt="PhonePe"/><img className="pay-logo" src="/payment-googlepay.png" alt="Google Pay"/></div><button className="primary" onClick={payViaUpi} style={{width:"100%",justifyContent:"center",background:`linear-gradient(135deg,${C.aqua},${C.aqua2})`,border:0,marginBottom:12}}>Pay via UPI (PhonePe / GPay) <ArrowUpRight size={16}/></button><p style={{fontSize:11.5,color:C.muted,lineHeight:1.6,marginBottom:16}}>Tapping this opens your UPI app with the amount pre-filled. Complete the payment, then confirm below.</p><button className="secondary" onClick={confirmPaid} style={{width:"100%",justifyContent:"center",color:C.navy,border:`1px solid ${C.line}`,background:"#fff"}}><Check size={16}/> I've completed the payment</button><div className="wa-reminder"><MessageCircle size={14}/> This opens WhatsApp with your order details pre-filled — please tap <strong>Send</strong> there to notify us!</div></div>}{checkoutStep === "done" && <div style={{textAlign:"center",padding:"45px 12px"}}><div style={{width:56,height:56,borderRadius:"50%",background:C.aqua,display:"grid",placeItems:"center",margin:"0 auto 16px"}}><Check size={28}/></div><div className="sg" style={{fontWeight:700,fontSize:18,marginBottom:8}}>Thanks, {form.name.split(" ")[0] || "there"}!</div><div className="order-id">Order #{orderId}</div><div className="order-summary">{orderSnapshot.map(i => <div className="os-item" key={i.id}><span>{i.name} × {i.qty}</span><span>{money(i.price * i.qty)}</span></div>)}<div className="os-total"><span>Total</span><span>{money(orderTotal)}</span></div></div><div className="next-steps"><div className="ns-item"><span className="ns-num">1</span><span className="ns-text">Please tap <strong>Send</strong> on the WhatsApp message that opened — this notifies us of your order.</span></div><div className="ns-item"><span className="ns-num">2</span><span className="ns-text">We'll verify your payment and reply on WhatsApp, usually within <strong>30 minutes</strong> during shop hours.</span></div><div className="ns-item"><span className="ns-num">3</span><span className="ns-text">We'll confirm delivery or pickup details and get your order ready.</span></div></div><p style={{fontSize:11.5,color:C.muted,lineHeight:1.6,marginBottom:22}}>A confirmation has been emailed to {form.email}. We'll reach out on {form.phone} to confirm.</p><button className="primary" onClick={() => {setCartOpen(false);setCheckoutStep("cart")}} style={{width:"100%",justifyContent:"center",background:`linear-gradient(135deg,${C.aqua},${C.aqua2})`,border:0}}>Continue Shopping <ChevronRight size={16}/></button></div>}
         {(checkoutStep === "cart" || checkoutStep === "details" || checkoutStep === "payment") && <div className="trust-strip"><span><CreditCard size={14}/> Prepaid Order</span><span><RotateCcw size={14}/> Easy Returns</span><span><ShieldCheck size={14}/> Secure UPI</span></div>}</div>{(checkoutStep === "cart" || checkoutStep === "details") && <div className="drawer-foot"><div style={{display:"flex",justifyContent:"space-between",marginBottom:13}}><span style={{color:C.muted,fontSize:13}}>Total</span><strong className="sg">{money(cartTotal)}</strong></div>{checkoutStep === "cart" ? <button className="primary" disabled={!cartItems.length} onClick={() => setCheckoutStep("details")} style={{width:"100%",justifyContent:"center",background:cartItems.length?`linear-gradient(135deg,${C.aqua},${C.aqua2})`:`#ccd5d2`,border:0}}>Proceed to Checkout <ChevronRight size={16}/></button> : <button className="primary" type="submit" form="checkout-form" style={{width:"100%",justifyContent:"center",background:C.navy,color:"#fff",border:0}}>Continue to Payment</button>}</div>}</div></div>}
 
-      {quickView && <div className="overlay qv-overlay" onClick={closeQuickView}><div className="qv-modal" onClick={e => e.stopPropagation()}><button className="icon-btn qv-close" onClick={closeQuickView}><X size={20}/></button><div className="qv-scroll"><div className="qv-top"><div className="qv-art"><ProductArt cat={quickView.cat}/></div><div className="qv-info">{quickView.badge && <span className="product-badge">{quickView.badge}</span>}<h3 className="qv-name">{quickView.name}</h3><div className="rating">{[...Array(5)].map((_, i) => <Star key={i} size={13} fill={i < Math.round(ratingFor(quickView.id).stars) ? "#f5b400" : "none"} strokeWidth={1.5}/>)}<span>{ratingFor(quickView.id).stars.toFixed(1)} ({ratingFor(quickView.id).count})</span></div><p className="qv-note">{quickView.note}</p><div className="qv-price">{priceLabel(quickView)}</div>{quickView.stock && <span className={`stock-badge qv-stock ${quickView.stock}`}>{quickView.stock === "in-stock" ? "In Stock" : "Made to Order"}</span>}</div></div>{relatedFor(quickView).length > 0 && <div className="qv-related"><div className="qv-related-label">You may also like</div><div className="qv-related-strip">{relatedFor(quickView).map(rp => <div key={rp.id} className="rel-card" onClick={() => setQuickView(rp)}><div className="rel-art"><ProductArt cat={rp.cat} compact/></div><div className="rel-body"><div className="rel-name">{rp.name}</div><div className="rel-price">{priceLabel(rp)}</div></div></div>)}</div></div>}</div><div className="qv-bar"><div className="qv-bar-price"><span className="p1">Price</span><span className="p2">{priceLabel(quickView)}</span></div>{cart[quickView.id] ? <div className="qty"><button onClick={() => changeQty(quickView.id,-1)}><Minus size={12}/></button><span>{cart[quickView.id]}</span><button onClick={() => changeQty(quickView.id,1)}><Plus size={12}/></button></div> : <button className="primary qv-add" onClick={() => addToCart(quickView.id)}><ShoppingCart size={15}/> Add to Cart</button>}</div></div></div>}
+      {blogPost && <div className="legal-overlay" onClick={() => setBlogPost(null)} role="dialog" aria-modal="true" aria-label={blogPost.title}><div className="legal-modal blog-modal" onClick={e => e.stopPropagation()}><div className="legal-head"><div><span className="blog-tag">{blogPost.tag}</span><h3 style={{marginTop:6}}>{blogPost.title}</h3></div><button className="icon-btn" onClick={() => setBlogPost(null)} aria-label="Close"><X size={20}/></button></div><div className="legal-body"><div className="legal-updated">{blogPost.readTime} · Aqua Dreamland</div>{blogPost.body.map((b,i) => <div className="legal-block" key={i}><h4>{b.h}</h4><p>{b.p}</p></div>)}<div className="blog-cta"><MessageCircle size={16}/> Got a specific question? <a href="https://wa.me/917015280545" target="_blank" rel="noopener noreferrer">Ask us on WhatsApp</a></div></div></div></div>}
 
-      {lightbox !== null && <div className="overlay lb-overlay" onClick={() => setLightbox(null)}><button className="icon-btn lb-close" onClick={() => setLightbox(null)}><X size={22}/></button><button className="icon-btn lb-nav lb-prev" onClick={e => {e.stopPropagation();setLightbox(i => (i - 1 + GALLERY_IMAGES.length) % GALLERY_IMAGES.length)}} aria-label="Previous image"><ChevronRight size={22} style={{transform:"rotate(180deg)"}}/></button><img className="lb-img" src={GALLERY_IMAGES[lightbox].src} alt={GALLERY_IMAGES[lightbox].alt} onClick={e => e.stopPropagation()} /><button className="icon-btn lb-nav lb-next" onClick={e => {e.stopPropagation();setLightbox(i => (i + 1) % GALLERY_IMAGES.length)}} aria-label="Next image"><ChevronRight size={22}/></button><div className="lb-count">{lightbox + 1} / {GALLERY_IMAGES.length}</div></div>}
+      {quickView && <div className="overlay qv-overlay" onClick={closeQuickView} role="dialog" aria-modal="true" aria-label={quickView.name}><div className="qv-modal" onClick={e => e.stopPropagation()}><button className="icon-btn qv-close" onClick={closeQuickView} aria-label="Close"><X size={20}/></button><div className="qv-scroll"><div className="qv-top"><div className="qv-art"><ProductArt cat={quickView.cat}/></div><div className="qv-info">{quickView.badge && <span className="product-badge">{quickView.badge}</span>}<h3 className="qv-name">{quickView.name}</h3><div className="rating">{[...Array(5)].map((_, i) => <Star key={i} size={13} fill={i < Math.round(ratingFor(quickView.id).stars) ? "#f5b400" : "none"} strokeWidth={1.5}/>)}<span>{ratingFor(quickView.id).stars.toFixed(1)} ({ratingFor(quickView.id).count})</span></div><p className="qv-note">{quickView.note}</p><div className="qv-price">{priceLabel(quickView)}</div>{quickView.stock && <span className={`stock-badge qv-stock ${quickView.stock}`}>{quickView.stock === "in-stock" ? "In Stock" : "Made to Order"}</span>}</div></div>{relatedFor(quickView).length > 0 && <div className="qv-related"><div className="qv-related-label">You may also like</div><div className="qv-related-strip">{relatedFor(quickView).map(rp => <div key={rp.id} className="rel-card" onClick={() => setQuickView(rp)} onKeyDown={onActivateKey(() => setQuickView(rp))} role="button" tabIndex={0} aria-label={`View ${rp.name}`}><div className="rel-art"><ProductArt cat={rp.cat} compact/></div><div className="rel-body"><div className="rel-name">{rp.name}</div><div className="rel-price">{priceLabel(rp)}</div></div></div>)}</div></div>}</div><div className="qv-bar"><div className="qv-bar-price"><span className="p1">Price</span><span className="p2">{priceLabel(quickView)}</span></div>{cart[quickView.id] ? <div className="qty"><button onClick={() => changeQty(quickView.id,-1)}><Minus size={12}/></button><span>{cart[quickView.id]}</span><button onClick={() => changeQty(quickView.id,1)}><Plus size={12}/></button></div> : <button className="primary qv-add" onClick={() => addToCart(quickView.id)}><ShoppingCart size={15}/> Add to Cart</button>}</div></div></div>}
+
+      {lightbox !== null && <div className="overlay lb-overlay" onClick={() => setLightbox(null)} role="dialog" aria-modal="true" aria-label={GALLERY_IMAGES[lightbox].alt}><button className="icon-btn lb-close" onClick={() => setLightbox(null)} aria-label="Close"><X size={22}/></button><button className="icon-btn lb-nav lb-prev" onClick={e => {e.stopPropagation();setLightbox(i => (i - 1 + GALLERY_IMAGES.length) % GALLERY_IMAGES.length)}} aria-label="Previous image"><ChevronRight size={22} style={{transform:"rotate(180deg)"}}/></button><img className="lb-img" src={GALLERY_IMAGES[lightbox].src} alt={GALLERY_IMAGES[lightbox].alt} onClick={e => e.stopPropagation()} /><button className="icon-btn lb-nav lb-next" onClick={e => {e.stopPropagation();setLightbox(i => (i + 1) % GALLERY_IMAGES.length)}} aria-label="Next image"><ChevronRight size={22}/></button><div className="lb-count">{lightbox + 1} / {GALLERY_IMAGES.length}</div></div>}
 
       {toast && <div className="toast"><Check size={16}/> {toast}</div>}
 
@@ -635,5 +764,7 @@ export default function App() {
 function ProductCard({ p, cart, addToCart, changeQty, justAdded, wishlist = {}, toggleWishlist, onQuickView }) {
   const r = ratingFor(p.id);
   const wished = !!wishlist[p.id];
-  return <div className={`product-card ${justAdded === p.id ? "add-flash" : ""}`}><div className="pc-art-wrap" onClick={() => onQuickView && onQuickView(p)} role="button" tabIndex={0}><ProductArt cat={p.cat}/><button className={`wish-btn ${wished ? "active" : ""}`} onClick={e => toggleWishlist && toggleWishlist(p.id, e)} aria-label="Save to wishlist"><Heart size={15} fill={wished ? "currentColor" : "none"}/></button><div className="quick-view-strip">Quick View</div>{p.stock && <span className={`stock-badge ${p.stock}`}>{p.stock === "in-stock" ? "In Stock" : "Made to Order"}</span>}</div><div className="product-body">{p.badge && <span className="product-badge">{p.badge}</span>}<div className="product-name">{p.name}</div><div className="rating">{[...Array(5)].map((_, i) => <Star key={i} size={12} fill={i < Math.round(r.stars) ? "#f5b400" : "none"} strokeWidth={1.5}/>)}<span>{r.stars.toFixed(1)} ({r.count})</span></div><div className="product-note">{p.note}</div><div className="product-row"><span className="price">{priceLabel(p)}</span>{justAdded === p.id ? <span className="product-badge" style={{margin:0,background:"#0ecb6b",color:"#fff"}}>✓ Added</span> : cart[p.id] ? <div className="qty"><button onClick={() => changeQty(p.id,-1)}><Minus size={12}/></button><span>{cart[p.id]}</span><button onClick={() => changeQty(p.id,1)}><Plus size={12}/></button></div> : <button className="add" onClick={() => addToCart(p.id)}>Add to cart</button>}</div></div></div>;
+  const openQV = () => onQuickView && onQuickView(p);
+  const onQVKey = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openQV(); } };
+  return <div className={`product-card ${justAdded === p.id ? "add-flash" : ""}`}><div className="pc-art-wrap" onClick={openQV} onKeyDown={onQVKey} role="button" tabIndex={0} aria-label={`Quick view: ${p.name}`}><ProductArt cat={p.cat}/><button className={`wish-btn ${wished ? "active" : ""}`} onClick={e => toggleWishlist && toggleWishlist(p.id, e)} aria-label={wished ? `Remove ${p.name} from wishlist` : `Save ${p.name} to wishlist`}><Heart size={15} fill={wished ? "currentColor" : "none"}/></button><div className="quick-view-strip">Quick View</div>{p.stock && <span className={`stock-badge ${p.stock}`}>{p.stock === "in-stock" ? "In Stock" : "Made to Order"}</span>}</div><div className="product-body">{p.badge && <span className="product-badge">{p.badge}</span>}<div className="product-name">{p.name}</div><div className="rating">{[...Array(5)].map((_, i) => <Star key={i} size={12} fill={i < Math.round(r.stars) ? "#f5b400" : "none"} strokeWidth={1.5}/>)}<span>{r.stars.toFixed(1)} ({r.count})</span></div><div className="product-note">{p.note}</div><div className="product-row"><span className="price">{priceLabel(p)}</span>{justAdded === p.id ? <span className="product-badge" style={{margin:0,background:"#0ecb6b",color:"#fff"}}>✓ Added</span> : cart[p.id] ? <div className="qty"><button onClick={() => changeQty(p.id,-1)}><Minus size={12}/></button><span>{cart[p.id]}</span><button onClick={() => changeQty(p.id,1)}><Plus size={12}/></button></div> : <button className="add" onClick={() => addToCart(p.id)}>Add to cart</button>}</div></div></div>;
 }
