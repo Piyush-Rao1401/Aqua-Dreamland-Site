@@ -205,6 +205,43 @@ export default function App() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const [wishlist, setWishlist] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("aqd_wishlist") || "{}"); } catch { return {}; }
+  });
+  useEffect(() => { try { localStorage.setItem("aqd_wishlist", JSON.stringify(wishlist)); } catch {} }, [wishlist]);
+  const toggleWishlist = (id, e) => { e?.stopPropagation(); setWishlist(w => ({ ...w, [id]: !w[id] })); };
+
+  const [quickView, setQuickView] = useState(null);
+  const closeQuickView = () => setQuickView(null);
+  const relatedFor = p => p ? PRODUCTS.filter(x => x.cat === p.cat && x.id !== p.id).slice(0, 4) : [];
+
+  const [lightbox, setLightbox] = useState(null);
+  useEffect(() => {
+    if (lightbox === null) return;
+    const onKey = e => {
+      if (e.key === "Escape") setLightbox(null);
+      if (e.key === "ArrowRight") setLightbox(i => (i + 1) % GALLERY_IMAGES.length);
+      if (e.key === "ArrowLeft") setLightbox(i => (i - 1 + GALLERY_IMAGES.length) % GALLERY_IMAGES.length);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox]);
+
+  useEffect(() => {
+    document.title = "Aqua Dreamland — Aquariums, Décor & More | Narnaul";
+    const setMeta = (attr, key, content) => {
+      let el = document.querySelector(`meta[${attr}="${key}"]`);
+      if (!el) { el = document.createElement("meta"); el.setAttribute(attr, key); document.head.appendChild(el); }
+      el.setAttribute("content", content);
+    };
+    setMeta("name", "description", "Custom-built aquariums, soft toys, pots and resin décor in Narnaul, Haryana. Shop online, pay via UPI, doorstep delivery & setup.");
+    setMeta("property", "og:title", "Aqua Dreamland — Aquariums, Décor & More");
+    setMeta("property", "og:description", "Custom-built aquariums, soft toys, pots and resin décor in Narnaul, Haryana. Shop online, pay via UPI.");
+    setMeta("property", "og:image", (typeof window !== "undefined" ? window.location.origin : "") + "/aquarium-card-final.jpg");
+    setMeta("property", "og:type", "website");
+    setMeta("name", "twitter:card", "summary_large_image");
+  }, []);
+
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 60000);
@@ -407,6 +444,65 @@ export default function App() {
         .gallery-cta{text-align:center;margin-top:26px;position:relative;z-index:1}
         @media(max-width:900px){.gallery-grid{grid-template-columns:repeat(3,1fr);gap:10px}}
         @media(max-width:700px){.gallery-grid{grid-template-columns:repeat(2,1fr);gap:9px}.gallery-item{border-radius:12px}.gallery .section-head{gap:14px}}
+
+        .pc-art-wrap{position:relative;cursor:pointer}
+        .wish-btn{position:absolute;top:11px;left:11px;z-index:6;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.92);border:0;display:grid;place-items:center;color:#65787a;box-shadow:0 6px 16px rgba(0,0,0,.15);transition:transform .2s ease,color .2s ease}
+        .wish-btn:hover{transform:scale(1.1)}
+        .wish-btn.active{color:${C.pink}}
+        .wish-btn:active{transform:scale(.85)}
+        .quick-view-strip{position:absolute;left:11px;right:11px;bottom:11px;z-index:6;background:rgba(4,19,33,.86);color:#fff;text-align:center;padding:9px;border-radius:10px;font-size:11px;font-weight:800;letter-spacing:.02em;backdrop-filter:blur(6px);opacity:0;transform:translateY(8px);transition:opacity .25s ease,transform .25s ease;pointer-events:none}
+        .product-card:hover .quick-view-strip{opacity:1;transform:translateY(0)}
+
+        .qv-overlay{display:flex;align-items:center;justify-content:center;padding:20px}
+        .qv-modal{background:#fff;border-radius:22px;max-width:640px;width:100%;max-height:86vh;display:flex;flex-direction:column;box-shadow:0 30px 70px rgba(0,0,0,.35);overflow:hidden;position:relative;animation:modal-in .3s cubic-bezier(.22,1,.36,1)}
+        .qv-close{position:absolute;top:14px;right:14px;z-index:5;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.15)}
+        .qv-scroll{flex:1;overflow:auto;padding:26px 26px 6px}
+        .qv-top{display:flex;gap:20px;align-items:flex-start}
+        .qv-art{width:180px;flex:none;border-radius:16px;overflow:hidden}
+        .qv-art .product-art{width:100%;height:180px}
+        .qv-info{flex:1;min-width:0}
+        .qv-name{font:700 19px 'Space Grotesk';margin:8px 0 6px;color:${C.navy}}
+        .qv-note{font-size:12.5px;color:#718084;line-height:1.6;margin:8px 0}
+        .qv-price{font:700 22px 'Space Grotesk';color:#0a737d;margin:10px 0}
+        .qv-stock{position:static;display:inline-block;margin-top:4px}
+        .qv-related{margin-top:24px;padding-top:20px;border-top:1px solid ${C.line}}
+        .qv-related-label{font:800 12px 'Space Grotesk';color:${C.navy};margin-bottom:12px}
+        .qv-related-strip{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px}
+        .qv-related-strip .rel-card{flex:0 0 130px;background:${C.cream};border:1px solid ${C.line};border-radius:13px;overflow:hidden;cursor:pointer;transition:transform .2s ease}
+        .qv-related-strip .rel-card:hover{transform:translateY(-3px)}
+        .rel-art{width:100%;height:80px;overflow:hidden}
+        .rel-art .product-art{width:100%;height:100%}
+        .rel-body{padding:9px 10px}
+        .rel-name{font:700 11.5px 'Space Grotesk';line-height:1.3}
+        .rel-price{color:#0a737d;font-weight:800;font-size:11.5px;margin-top:4px}
+        .qv-bar{display:flex;align-items:center;gap:14px;padding:16px 26px;border-top:1px solid ${C.line};background:#fff}
+        .qv-bar-price{display:flex;flex-direction:column}
+        .qv-bar-price .p1{font-size:10px;color:#95a5a7;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+        .qv-bar-price .p2{font:800 19px 'Space Grotesk';color:${C.navy}}
+        .qv-add{margin-left:auto}
+        @media(max-width:700px){.qv-modal{max-height:92vh;border-radius:18px}.qv-top{flex-direction:column}.qv-art{width:100%}.qv-art .product-art{height:200px}}
+
+        .overlay.lb-overlay{background:rgba(0,8,14,.92);display:flex;align-items:center;justify-content:center;padding:40px}
+        .lb-img{max-width:min(90vw,900px);max-height:78vh;border-radius:16px;object-fit:contain;box-shadow:0 30px 70px rgba(0,0,0,.5);cursor:default}
+        .lb-close{position:fixed;top:22px;right:22px;z-index:5;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;backdrop-filter:blur(6px);border:0}
+        .lb-close:hover{background:rgba(255,255,255,.2)}
+        .lb-nav{position:fixed;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;backdrop-filter:blur(6px);z-index:5;border:0}
+        .lb-nav:hover{background:rgba(255,255,255,.2)}
+        .lb-prev{left:24px}.lb-next{right:24px}
+        .lb-count{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);color:#cfe6e5;font-size:12.5px;font-weight:700;z-index:5}
+        @media(max-width:700px){.lb-nav{width:38px;height:38px}.lb-prev{left:10px}.lb-next{right:10px}.lb-close{top:14px;right:14px}}
+
+        .checkout-steps{display:flex;align-items:flex-start;justify-content:center;margin-bottom:22px}
+        .cstep{display:flex;flex-direction:column;align-items:center;gap:6px;width:110px;position:relative}
+        .cstep-circle{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:800 11.5px 'Space Grotesk';border:2px solid ${C.line};color:#95a5a7;background:#fff;z-index:1}
+        .cstep-label{font-size:10.5px;font-weight:700;color:#95a5a7}
+        .cstep.active .cstep-circle{background:${C.navy};border-color:${C.navy};color:#fff;box-shadow:0 0 0 5px rgba(4,19,33,.08)}
+        .cstep.active .cstep-label{color:${C.navy}}
+        .cstep.done .cstep-circle{background:${C.green};border-color:${C.green};color:#fff}
+        .cstep.done .cstep-label{color:${C.navy}}
+        .cstep:before{content:"";position:absolute;top:14px;left:-50%;width:100%;height:2px;background:${C.line};z-index:0}
+        .cstep:first-child:before{display:none}
+        .cstep.done:before{background:${C.green}}
       `}</style>
 
       <header className={`nav ${scrolled ? "scrolled" : ""}`}>
@@ -462,7 +558,7 @@ export default function App() {
 
         <section id="featured" className="section featured">
           <div className="section-head centered"><div><div className="eyebrow pill"><Sparkles size={11}/> Our Collection</div><h2 className="section-title"><Waves size={22} className="wave-deco"/> Dive Into Our Favorites <Waves size={22} className="wave-deco"/></h2><p className="section-copy center">Start simple or go all-in. These are the aquarium sizes customers can shop right now.</p></div></div>
-          <Reveal className="product-grid">{featured.map(p => <ProductCard key={p.id} p={p} cart={cart} addToCart={addToCart} changeQty={changeQty} justAdded={justAdded}/>)}</Reveal>
+          <Reveal className="product-grid">{featured.map(p => <ProductCard key={p.id} p={p} cart={cart} addToCart={addToCart} changeQty={changeQty} justAdded={justAdded} wishlist={wishlist} toggleWishlist={toggleWishlist} onQuickView={setQuickView}/>)}</Reveal>
         </section>
 
         <section className="section categories">
@@ -493,9 +589,10 @@ export default function App() {
               </div>
             </div>
             <div className="gallery-grid">
-              {GALLERY_IMAGES.map(img => (
-                <div key={img.id} className="gallery-item">
+              {GALLERY_IMAGES.map((img, i) => (
+                <div key={img.id} className="gallery-item" onClick={() => setLightbox(i)} role="button" tabIndex={0}>
                   <img src={img.src} alt={img.alt} loading="lazy" />
+                  <div className="gallery-overlay"><Search size={13}/> View larger</div>
                 </div>
               ))}
             </div>
@@ -505,7 +602,7 @@ export default function App() {
         <section id="shop" className="section shop">
           <div className="section-head"><div><div className="eyebrow">Shop everything</div><h2 className="section-title">Find your next favourite piece.</h2><p className="section-copy">Choose a category, search it, and add products straight to your cart.</p></div></div>
           <div className="shop-toolbar"><div className="pills">{CATEGORIES.map(c => {const Icon=c.icon;return <button key={c.id} className={`pill ${activeCat===c.id?"active":""}`} onClick={() => {setActiveCat(c.id);setQuery("")}}><Icon size={14}/>{c.label}</button>})}</div><div className="search"><Search size={15}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder={`Search ${CAT_META[activeCat].label.toLowerCase()}`}/>{query && <button className="search-clear" onClick={() => setQuery("")} aria-label="Clear search"><X size={14}/></button>}</div></div>
-          {filtered.length ? <Reveal className="product-grid">{filtered.map(p => <ProductCard key={p.id} p={p} cart={cart} addToCart={addToCart} changeQty={changeQty} justAdded={justAdded}/>)}</Reveal> : <div className="empty">No products matched “{query}”. Try another search.</div>}
+          {filtered.length ? <Reveal className="product-grid">{filtered.map(p => <ProductCard key={p.id} p={p} cart={cart} addToCart={addToCart} changeQty={changeQty} justAdded={justAdded} wishlist={wishlist} toggleWishlist={toggleWishlist} onQuickView={setQuickView}/>)}</Reveal> : <div className="empty">No products matched “{query}”. Try another search.</div>}
         </section>
 
         <section className="section faq"><Reveal><div className="section-head centered"><div><div className="eyebrow pill"><Sparkles size={11}/> Got Questions?</div><h2 className="section-title">Frequently Asked Questions</h2></div></div><div className="faq-list">{FAQS.map((f,i) => <div key={i} className={`faq-item ${openFaq===i?"open":""}`}><button className="faq-q" onClick={() => setOpenFaq(openFaq===i?-1:i)}>{f.q}<ChevronDown size={18} className="faq-chevron"/></button><div className="faq-a"><p>{f.a}</p></div></div>)}</div></Reveal></section>
@@ -519,8 +616,12 @@ export default function App() {
 
       {legalTab && <div className="legal-overlay" onClick={() => setLegalTab(null)}><div className="legal-modal" onClick={e => e.stopPropagation()}><div className="legal-head"><h3>{LEGAL[legalTab].label}</h3><button className="icon-btn" onClick={() => setLegalTab(null)}><X size={20}/></button></div><div className="legal-tabs">{Object.keys(LEGAL).map(k => <button key={k} className={`legal-tab ${legalTab===k?"active":""}`} onClick={() => setLegalTab(k)}>{LEGAL[k].label}</button>)}</div><div className="legal-body"><div className="legal-updated">{LEGAL[legalTab].updated}</div>{LEGAL[legalTab].body.map((b,i) => <div className="legal-block" key={i}><h4>{b.h}</h4><p>{b.p}</p></div>)}</div></div></div>}
 
-      {cartOpen && <div className="overlay" onClick={() => setCartOpen(false)}><div className="drawer" onClick={e => e.stopPropagation()}><div className="drawer-head"><span className="sg" style={{fontWeight:700,fontSize:17}}>{checkoutStep === "cart" ? "Your Cart" : checkoutStep === "details" ? "Delivery Details" : checkoutStep === "payment" ? "Payment" : "Order Placed"}</span><button className="icon-btn" onClick={() => setCartOpen(false)}><X size={20}/></button></div><div className="drawer-body">{checkoutStep === "cart" && (cartItems.length ? cartItems.map(i => <div className="drawer-item" key={i.id}><div><div style={{fontWeight:700,fontSize:13}}>{i.name}</div><div style={{fontSize:11.5,color:C.muted}}>{priceLabel(i)} × {i.qty}</div></div><div className="qty"><button onClick={() => changeQty(i.id,-1)}><Minus size={12}/></button><span style={{fontSize:13}}>{i.qty}</span><button onClick={() => changeQty(i.id,1)}><Plus size={12}/></button></div></div>) : <div className="empty">Your cart is empty. Add something you love.</div>)}{checkoutStep === "details" && <form id="checkout-form" className="form" onSubmit={placeOrder}><label>Full name<input required value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label><label>Phone number<input required value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/></label><label>Email address<input type="email" required value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/></label><label>Delivery address<textarea required rows={4} value={form.address} onChange={e=>setForm({...form,address:e.target.value})}/></label></form>}{checkoutStep === "payment" && <div style={{textAlign:"center",padding:"10px 4px"}}><div style={{fontSize:13,color:C.muted,marginBottom:4}}>Amount to pay</div><div className="sg" style={{fontWeight:800,fontSize:32,marginBottom:10}}>{money(cartTotal)}</div><div className="pay-badges" style={{justifyContent:"center",marginBottom:18}}><img className="pay-logo" src="/payment-phonepe.png" alt="PhonePe"/><img className="pay-logo" src="/payment-googlepay.png" alt="Google Pay"/></div><button className="primary" onClick={payViaUpi} style={{width:"100%",justifyContent:"center",background:`linear-gradient(135deg,${C.aqua},${C.aqua2})`,border:0,marginBottom:12}}>Pay via UPI (PhonePe / GPay) <ArrowUpRight size={16}/></button><p style={{fontSize:11.5,color:C.muted,lineHeight:1.6,marginBottom:16}}>Tapping this opens your UPI app with the amount pre-filled. Complete the payment, then confirm below.</p><button className="secondary" onClick={confirmPaid} style={{width:"100%",justifyContent:"center",color:C.navy,border:`1px solid ${C.line}`,background:"#fff"}}><Check size={16}/> I've completed the payment</button><div className="wa-reminder"><MessageCircle size={14}/> This opens WhatsApp with your order details pre-filled — please tap <strong>Send</strong> there to notify us!</div></div>}{checkoutStep === "done" && <div style={{textAlign:"center",padding:"45px 12px"}}><div style={{width:56,height:56,borderRadius:"50%",background:C.aqua,display:"grid",placeItems:"center",margin:"0 auto 16px"}}><Check size={28}/></div><div className="sg" style={{fontWeight:700,fontSize:18,marginBottom:8}}>Thanks, {form.name.split(" ")[0] || "there"}!</div><div className="order-id">Order #{orderId}</div><div className="order-summary">{orderSnapshot.map(i => <div className="os-item" key={i.id}><span>{i.name} × {i.qty}</span><span>{money(i.price * i.qty)}</span></div>)}<div className="os-total"><span>Total</span><span>{money(orderTotal)}</span></div></div><div className="next-steps"><div className="ns-item"><span className="ns-num">1</span><span className="ns-text">Please tap <strong>Send</strong> on the WhatsApp message that opened — this notifies us of your order.</span></div><div className="ns-item"><span className="ns-num">2</span><span className="ns-text">We'll verify your payment and reply on WhatsApp, usually within <strong>30 minutes</strong> during shop hours.</span></div><div className="ns-item"><span className="ns-num">3</span><span className="ns-text">We'll confirm delivery or pickup details and get your order ready.</span></div></div><p style={{fontSize:11.5,color:C.muted,lineHeight:1.6,marginBottom:22}}>A confirmation has been emailed to {form.email}. We'll reach out on {form.phone} to confirm.</p><button className="primary" onClick={() => {setCartOpen(false);setCheckoutStep("cart")}} style={{width:"100%",justifyContent:"center",background:`linear-gradient(135deg,${C.aqua},${C.aqua2})`,border:0}}>Continue Shopping <ChevronRight size={16}/></button></div>}
+      {cartOpen && <div className="overlay" onClick={() => setCartOpen(false)}><div className="drawer" onClick={e => e.stopPropagation()}><div className="drawer-head"><span className="sg" style={{fontWeight:700,fontSize:17}}>{checkoutStep === "cart" ? "Your Cart" : checkoutStep === "details" ? "Delivery Details" : checkoutStep === "payment" ? "Payment" : "Order Placed"}</span><button className="icon-btn" onClick={() => setCartOpen(false)}><X size={20}/></button></div><div className="drawer-body">{(checkoutStep === "cart" || checkoutStep === "details" || checkoutStep === "payment") && <div className="checkout-steps"><div className={`cstep ${checkoutStep !== "cart" ? "done" : "active"}`}><div className="cstep-circle">{checkoutStep !== "cart" ? <Check size={13}/> : "1"}</div><div className="cstep-label">Cart</div></div><div className={`cstep ${checkoutStep === "payment" ? "done" : checkoutStep === "details" ? "active" : ""}`}><div className="cstep-circle">{checkoutStep === "payment" ? <Check size={13}/> : "2"}</div><div className="cstep-label">Details</div></div><div className={`cstep ${checkoutStep === "payment" ? "active" : ""}`}><div className="cstep-circle">3</div><div className="cstep-label">Payment</div></div></div>}{checkoutStep === "cart" && (cartItems.length ? cartItems.map(i => <div className="drawer-item" key={i.id}><div><div style={{fontWeight:700,fontSize:13}}>{i.name}</div><div style={{fontSize:11.5,color:C.muted}}>{priceLabel(i)} × {i.qty}</div></div><div className="qty"><button onClick={() => changeQty(i.id,-1)}><Minus size={12}/></button><span style={{fontSize:13}}>{i.qty}</span><button onClick={() => changeQty(i.id,1)}><Plus size={12}/></button></div></div>) : <div className="empty">Your cart is empty. Add something you love.</div>)}{checkoutStep === "details" && <form id="checkout-form" className="form" onSubmit={placeOrder}><label>Full name<input required value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label><label>Phone number<input required value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/></label><label>Email address<input type="email" required value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/></label><label>Delivery address<textarea required rows={4} value={form.address} onChange={e=>setForm({...form,address:e.target.value})}/></label></form>}{checkoutStep === "payment" && <div style={{textAlign:"center",padding:"10px 4px"}}><div style={{fontSize:13,color:C.muted,marginBottom:4}}>Amount to pay</div><div className="sg" style={{fontWeight:800,fontSize:32,marginBottom:10}}>{money(cartTotal)}</div><div className="pay-badges" style={{justifyContent:"center",marginBottom:18}}><img className="pay-logo" src="/payment-phonepe.png" alt="PhonePe"/><img className="pay-logo" src="/payment-googlepay.png" alt="Google Pay"/></div><button className="primary" onClick={payViaUpi} style={{width:"100%",justifyContent:"center",background:`linear-gradient(135deg,${C.aqua},${C.aqua2})`,border:0,marginBottom:12}}>Pay via UPI (PhonePe / GPay) <ArrowUpRight size={16}/></button><p style={{fontSize:11.5,color:C.muted,lineHeight:1.6,marginBottom:16}}>Tapping this opens your UPI app with the amount pre-filled. Complete the payment, then confirm below.</p><button className="secondary" onClick={confirmPaid} style={{width:"100%",justifyContent:"center",color:C.navy,border:`1px solid ${C.line}`,background:"#fff"}}><Check size={16}/> I've completed the payment</button><div className="wa-reminder"><MessageCircle size={14}/> This opens WhatsApp with your order details pre-filled — please tap <strong>Send</strong> there to notify us!</div></div>}{checkoutStep === "done" && <div style={{textAlign:"center",padding:"45px 12px"}}><div style={{width:56,height:56,borderRadius:"50%",background:C.aqua,display:"grid",placeItems:"center",margin:"0 auto 16px"}}><Check size={28}/></div><div className="sg" style={{fontWeight:700,fontSize:18,marginBottom:8}}>Thanks, {form.name.split(" ")[0] || "there"}!</div><div className="order-id">Order #{orderId}</div><div className="order-summary">{orderSnapshot.map(i => <div className="os-item" key={i.id}><span>{i.name} × {i.qty}</span><span>{money(i.price * i.qty)}</span></div>)}<div className="os-total"><span>Total</span><span>{money(orderTotal)}</span></div></div><div className="next-steps"><div className="ns-item"><span className="ns-num">1</span><span className="ns-text">Please tap <strong>Send</strong> on the WhatsApp message that opened — this notifies us of your order.</span></div><div className="ns-item"><span className="ns-num">2</span><span className="ns-text">We'll verify your payment and reply on WhatsApp, usually within <strong>30 minutes</strong> during shop hours.</span></div><div className="ns-item"><span className="ns-num">3</span><span className="ns-text">We'll confirm delivery or pickup details and get your order ready.</span></div></div><p style={{fontSize:11.5,color:C.muted,lineHeight:1.6,marginBottom:22}}>A confirmation has been emailed to {form.email}. We'll reach out on {form.phone} to confirm.</p><button className="primary" onClick={() => {setCartOpen(false);setCheckoutStep("cart")}} style={{width:"100%",justifyContent:"center",background:`linear-gradient(135deg,${C.aqua},${C.aqua2})`,border:0}}>Continue Shopping <ChevronRight size={16}/></button></div>}
         {(checkoutStep === "cart" || checkoutStep === "details" || checkoutStep === "payment") && <div className="trust-strip"><span><CreditCard size={14}/> Prepaid Order</span><span><RotateCcw size={14}/> Easy Returns</span><span><ShieldCheck size={14}/> Secure UPI</span></div>}</div>{(checkoutStep === "cart" || checkoutStep === "details") && <div className="drawer-foot"><div style={{display:"flex",justifyContent:"space-between",marginBottom:13}}><span style={{color:C.muted,fontSize:13}}>Total</span><strong className="sg">{money(cartTotal)}</strong></div>{checkoutStep === "cart" ? <button className="primary" disabled={!cartItems.length} onClick={() => setCheckoutStep("details")} style={{width:"100%",justifyContent:"center",background:cartItems.length?`linear-gradient(135deg,${C.aqua},${C.aqua2})`:`#ccd5d2`,border:0}}>Proceed to Checkout <ChevronRight size={16}/></button> : <button className="primary" type="submit" form="checkout-form" style={{width:"100%",justifyContent:"center",background:C.navy,color:"#fff",border:0}}>Continue to Payment</button>}</div>}</div></div>}
+
+      {quickView && <div className="overlay qv-overlay" onClick={closeQuickView}><div className="qv-modal" onClick={e => e.stopPropagation()}><button className="icon-btn qv-close" onClick={closeQuickView}><X size={20}/></button><div className="qv-scroll"><div className="qv-top"><div className="qv-art"><ProductArt cat={quickView.cat}/></div><div className="qv-info">{quickView.badge && <span className="product-badge">{quickView.badge}</span>}<h3 className="qv-name">{quickView.name}</h3><div className="rating">{[...Array(5)].map((_, i) => <Star key={i} size={13} fill={i < Math.round(ratingFor(quickView.id).stars) ? "#f5b400" : "none"} strokeWidth={1.5}/>)}<span>{ratingFor(quickView.id).stars.toFixed(1)} ({ratingFor(quickView.id).count})</span></div><p className="qv-note">{quickView.note}</p><div className="qv-price">{priceLabel(quickView)}</div>{quickView.stock && <span className={`stock-badge qv-stock ${quickView.stock}`}>{quickView.stock === "in-stock" ? "In Stock" : "Made to Order"}</span>}</div></div>{relatedFor(quickView).length > 0 && <div className="qv-related"><div className="qv-related-label">You may also like</div><div className="qv-related-strip">{relatedFor(quickView).map(rp => <div key={rp.id} className="rel-card" onClick={() => setQuickView(rp)}><div className="rel-art"><ProductArt cat={rp.cat} compact/></div><div className="rel-body"><div className="rel-name">{rp.name}</div><div className="rel-price">{priceLabel(rp)}</div></div></div>)}</div></div>}</div><div className="qv-bar"><div className="qv-bar-price"><span className="p1">Price</span><span className="p2">{priceLabel(quickView)}</span></div>{cart[quickView.id] ? <div className="qty"><button onClick={() => changeQty(quickView.id,-1)}><Minus size={12}/></button><span>{cart[quickView.id]}</span><button onClick={() => changeQty(quickView.id,1)}><Plus size={12}/></button></div> : <button className="primary qv-add" onClick={() => addToCart(quickView.id)}><ShoppingCart size={15}/> Add to Cart</button>}</div></div></div>}
+
+      {lightbox !== null && <div className="overlay lb-overlay" onClick={() => setLightbox(null)}><button className="icon-btn lb-close" onClick={() => setLightbox(null)}><X size={22}/></button><button className="icon-btn lb-nav lb-prev" onClick={e => {e.stopPropagation();setLightbox(i => (i - 1 + GALLERY_IMAGES.length) % GALLERY_IMAGES.length)}} aria-label="Previous image"><ChevronRight size={22} style={{transform:"rotate(180deg)"}}/></button><img className="lb-img" src={GALLERY_IMAGES[lightbox].src} alt={GALLERY_IMAGES[lightbox].alt} onClick={e => e.stopPropagation()} /><button className="icon-btn lb-nav lb-next" onClick={e => {e.stopPropagation();setLightbox(i => (i + 1) % GALLERY_IMAGES.length)}} aria-label="Next image"><ChevronRight size={22}/></button><div className="lb-count">{lightbox + 1} / {GALLERY_IMAGES.length}</div></div>}
 
       {toast && <div className="toast"><Check size={16}/> {toast}</div>}
 
@@ -531,7 +632,8 @@ export default function App() {
   );
 }
 
-function ProductCard({ p, cart, addToCart, changeQty, justAdded }) {
+function ProductCard({ p, cart, addToCart, changeQty, justAdded, wishlist = {}, toggleWishlist, onQuickView }) {
   const r = ratingFor(p.id);
-  return <div className={`product-card ${justAdded === p.id ? "add-flash" : ""}`}><ProductArt cat={p.cat}/>{p.stock && <span className={`stock-badge ${p.stock}`}>{p.stock === "in-stock" ? "In Stock" : "Made to Order"}</span>}<div className="product-body">{p.badge && <span className="product-badge">{p.badge}</span>}<div className="product-name">{p.name}</div><div className="rating">{[...Array(5)].map((_, i) => <Star key={i} size={12} fill={i < Math.round(r.stars) ? "#f5b400" : "none"} strokeWidth={1.5}/>)}<span>{r.stars.toFixed(1)} ({r.count})</span></div><div className="product-note">{p.note}</div><div className="product-row"><span className="price">{priceLabel(p)}</span>{justAdded === p.id ? <span className="product-badge" style={{margin:0,background:"#0ecb6b",color:"#fff"}}>✓ Added</span> : cart[p.id] ? <div className="qty"><button onClick={() => changeQty(p.id,-1)}><Minus size={12}/></button><span>{cart[p.id]}</span><button onClick={() => changeQty(p.id,1)}><Plus size={12}/></button></div> : <button className="add" onClick={() => addToCart(p.id)}>Add to cart</button>}</div></div></div>;
+  const wished = !!wishlist[p.id];
+  return <div className={`product-card ${justAdded === p.id ? "add-flash" : ""}`}><div className="pc-art-wrap" onClick={() => onQuickView && onQuickView(p)} role="button" tabIndex={0}><ProductArt cat={p.cat}/><button className={`wish-btn ${wished ? "active" : ""}`} onClick={e => toggleWishlist && toggleWishlist(p.id, e)} aria-label="Save to wishlist"><Heart size={15} fill={wished ? "currentColor" : "none"}/></button><div className="quick-view-strip">Quick View</div>{p.stock && <span className={`stock-badge ${p.stock}`}>{p.stock === "in-stock" ? "In Stock" : "Made to Order"}</span>}</div><div className="product-body">{p.badge && <span className="product-badge">{p.badge}</span>}<div className="product-name">{p.name}</div><div className="rating">{[...Array(5)].map((_, i) => <Star key={i} size={12} fill={i < Math.round(r.stars) ? "#f5b400" : "none"} strokeWidth={1.5}/>)}<span>{r.stars.toFixed(1)} ({r.count})</span></div><div className="product-note">{p.note}</div><div className="product-row"><span className="price">{priceLabel(p)}</span>{justAdded === p.id ? <span className="product-badge" style={{margin:0,background:"#0ecb6b",color:"#fff"}}>✓ Added</span> : cart[p.id] ? <div className="qty"><button onClick={() => changeQty(p.id,-1)}><Minus size={12}/></button><span>{cart[p.id]}</span><button onClick={() => changeQty(p.id,1)}><Plus size={12}/></button></div> : <button className="add" onClick={() => addToCart(p.id)}>Add to cart</button>}</div></div></div>;
 }
