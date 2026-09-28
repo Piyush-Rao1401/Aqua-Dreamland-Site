@@ -198,6 +198,13 @@ const LEGAL = {
     ],
   },
 };
+// ---- Analytics config ----
+// Paste your real IDs below to turn tracking on. Leave blank ("") to keep it off.
+// GA4: Google Analytics → Admin → Data Streams → your web stream → Measurement ID (starts with "G-")
+// Meta Pixel: Meta Events Manager → Data Sources → your Pixel → Pixel ID (a number)
+const GA_MEASUREMENT_ID = "G-RT60TRG0KR"; // e.g. "G-XXXXXXXXXX"
+const META_PIXEL_ID = "2135836020686659"; // e.g. "1234567890123456"
+
 const UPI_ID = "9306793252@ybl";
 const SHOP_WHATSAPP = "917015280545";
 const money = n => "₹" + n.toLocaleString("en-IN");
@@ -291,7 +298,18 @@ export default function App() {
     try { return JSON.parse(localStorage.getItem("aqd_wishlist") || "{}"); } catch { return {}; }
   });
   useEffect(() => { try { localStorage.setItem("aqd_wishlist", JSON.stringify(wishlist)); } catch {} }, [wishlist]);
-  const toggleWishlist = (id, e) => { e?.stopPropagation(); setWishlist(w => ({ ...w, [id]: !w[id] })); };
+  const toggleWishlist = (id, e) => {
+    e?.stopPropagation();
+    setWishlist(w => {
+      const nowWished = !w[id];
+      if (nowWished) {
+        const prod = PRODUCTS.find(x => x.id === id);
+        if (prod) trackEvent("add_to_wishlist", { currency: "INR", value: prod.price, items: [{ item_id: prod.id, item_name: prod.name }] });
+      }
+      return { ...w, [id]: nowWished };
+    });
+  };
+  const openQuickView = p => { setQuickView(p); trackEvent("view_item", { currency: "INR", value: p.price, items: [{ item_id: p.id, item_name: p.name, item_category: p.cat }] }); };
 
   const [quickView, setQuickView] = useState(null);
   const closeQuickView = () => setQuickView(null);
@@ -314,6 +332,37 @@ export default function App() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [cartOpen, legalTab, quickView, blogPost]);
+
+  // Load Google Analytics (GA4) — only if a real Measurement ID is set above
+  useEffect(() => {
+    if (!GA_MEASUREMENT_ID) return;
+    const s = document.createElement("script");
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    window.gtag("js", new Date());
+    window.gtag("config", GA_MEASUREMENT_ID);
+  }, []);
+
+  // Load Meta (Facebook) Pixel — only if a real Pixel ID is set above
+  useEffect(() => {
+    if (!META_PIXEL_ID) return;
+    if (window.fbq) return;
+    const f = function () { f.callMethod ? f.callMethod.apply(f, arguments) : f.queue.push(arguments); };
+    window.fbq = f; f.push = f; f.loaded = true; f.version = "2.0"; f.queue = [];
+    const s = document.createElement("script");
+    s.async = true;
+    s.src = "https://connect.facebook.net/en_US/fbevents.js";
+    document.head.appendChild(s);
+    window.fbq("init", META_PIXEL_ID);
+    window.fbq("track", "PageView");
+  }, []);
+
+  // Safe wrappers — no-ops until real IDs are set, so nothing breaks either way
+  const trackEvent = (name, params = {}) => { try { window.gtag && window.gtag("event", name, params); } catch {} };
+  const trackPixel = (name, params = {}) => { try { window.fbq && window.fbq("track", name, params); } catch {} };
 
   const [lightbox, setLightbox] = useState(null);
   useEffect(() => {
@@ -371,10 +420,25 @@ export default function App() {
   const cartTotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
 
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  const addToCart = id => { setCart(c => ({ ...c, [id]: (c[id] || 0) + 1 })); setJustAdded(id); showToast(`✓ ${PRODUCTS.find(p => p.id === id)?.name || "Item"} added to cart`); setTimeout(() => setJustAdded(curr => curr === id ? null : curr), 700); };
+  const addToCart = id => {
+    const prod = PRODUCTS.find(p => p.id === id);
+    setCart(c => ({ ...c, [id]: (c[id] || 0) + 1 }));
+    setJustAdded(id);
+    showToast(`✓ ${prod?.name || "Item"} added to cart`);
+    setTimeout(() => setJustAdded(curr => curr === id ? null : curr), 700);
+    if (prod) {
+      trackEvent("add_to_cart", { currency: "INR", value: prod.price, items: [{ item_id: prod.id, item_name: prod.name, item_category: prod.cat, price: prod.price, quantity: 1 }] });
+      trackPixel("AddToCart", { content_ids: [prod.id], content_name: prod.name, content_category: prod.cat, value: prod.price, currency: "INR" });
+    }
+  };
   const changeQty = (id, delta) => setCart(c => ({ ...c, [id]: Math.max(0, (c[id] || 0) + delta) }));
   const openCart = () => { setCheckoutStep("cart"); setCartOpen(true); };
-  const placeOrder = e => { e.preventDefault(); setCheckoutStep("payment"); };
+  const placeOrder = e => {
+    e.preventDefault();
+    setCheckoutStep("payment");
+    trackEvent("begin_checkout", { currency: "INR", value: cartTotal, items: cartItems.map(i => ({ item_id: i.id, item_name: i.name, item_category: i.cat, price: i.price, quantity: i.qty })) });
+    trackPixel("InitiateCheckout", { value: cartTotal, currency: "INR", num_items: cartCount });
+  };
   const orderSummary = () => cartItems.map(i => `${i.name} x${i.qty} (${priceLabel(i)})`).join(", ");
   const upiLink = () => `upi://pay?pa=${UPI_ID}&pn=Aqua%20Dreamland&am=${cartTotal}&cu=INR&tn=${encodeURIComponent("Order - " + form.name)}`;
   const payViaUpi = () => { window.location.href = upiLink(); };
@@ -382,6 +446,8 @@ export default function App() {
     const newOrderId = `AQD-${new Date().toISOString().slice(0,10).replace(/-/g,"")}-${Math.floor(1000 + Math.random()*9000)}`;
     const msg = `New order on Aqua Dreamland! (${newOrderId})\nName: ${form.name}\nPhone: ${form.phone}\nAddress: ${form.address}\nItems: ${orderSummary()}\nTotal: ${money(cartTotal)}\nPayment: Paid via UPI (please verify)`;
     window.open(`https://wa.me/${SHOP_WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank");
+    trackEvent("purchase", { transaction_id: newOrderId, currency: "INR", value: cartTotal, items: cartItems.map(i => ({ item_id: i.id, item_name: i.name, item_category: i.cat, price: i.price, quantity: i.qty })) });
+    trackPixel("Purchase", { value: cartTotal, currency: "INR", content_ids: cartItems.map(i => i.id), num_items: cartCount });
     if (window.emailjs && form.email) {
       window.emailjs.send("service_cu2o2ui", "template_hb68ekq", {
         to_email: form.email,
@@ -683,7 +749,7 @@ export default function App() {
 
         <section id="featured" className="section featured">
           <div className="section-head centered"><div><div className="eyebrow pill"><Sparkles size={11}/> Our Collection</div><h2 className="section-title"><Waves size={22} className="wave-deco"/> Dive Into Our Favorites <Waves size={22} className="wave-deco"/></h2><p className="section-copy center">Start simple or go all-in. These are the aquarium sizes customers can shop right now.</p></div></div>
-          <Reveal className="product-grid">{featured.map(p => <ProductCard key={p.id} p={p} cart={cart} addToCart={addToCart} changeQty={changeQty} justAdded={justAdded} wishlist={wishlist} toggleWishlist={toggleWishlist} onQuickView={setQuickView}/>)}</Reveal>
+          <Reveal className="product-grid">{featured.map(p => <ProductCard key={p.id} p={p} cart={cart} addToCart={addToCart} changeQty={changeQty} justAdded={justAdded} wishlist={wishlist} toggleWishlist={toggleWishlist} onQuickView={openQuickView}/>)}</Reveal>
         </section>
 
         <section className="section categories">
@@ -729,7 +795,7 @@ export default function App() {
         <section id="shop" className="section shop">
           <div className="section-head"><div><div className="eyebrow">Shop everything</div><h2 className="section-title">Find your next favourite piece.</h2><p className="section-copy">Choose a category, search it, and add products straight to your cart.</p></div></div>
           <div className="shop-toolbar"><div className="pills">{CATEGORIES.map(c => {const Icon=c.icon;return <button key={c.id} className={`pill ${activeCat===c.id?"active":""}`} onClick={() => {setActiveCat(c.id);setQuery("")}}><Icon size={14}/>{c.label}</button>})}</div><div className="search"><Search size={15}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder={`Search ${CAT_META[activeCat].label.toLowerCase()}`}/>{query && <button className="search-clear" onClick={() => setQuery("")} aria-label="Clear search"><X size={14}/></button>}</div></div>
-          {filtered.length ? <Reveal className="product-grid">{filtered.map(p => <ProductCard key={p.id} p={p} cart={cart} addToCart={addToCart} changeQty={changeQty} justAdded={justAdded} wishlist={wishlist} toggleWishlist={toggleWishlist} onQuickView={setQuickView}/>)}</Reveal> : <div className="empty">No products matched “{query}”. Try another search.</div>}
+          {filtered.length ? <Reveal className="product-grid">{filtered.map(p => <ProductCard key={p.id} p={p} cart={cart} addToCart={addToCart} changeQty={changeQty} justAdded={justAdded} wishlist={wishlist} toggleWishlist={toggleWishlist} onQuickView={openQuickView}/>)}</Reveal> : <div className="empty">No products matched “{query}”. Try another search.</div>}
         </section>
 
         <section className="section faq"><Reveal><div className="section-head centered"><div><div className="eyebrow pill"><Sparkles size={11}/> Got Questions?</div><h2 className="section-title">Frequently Asked Questions</h2></div></div><div className="faq-list">{FAQS.map((f,i) => <div key={i} className={`faq-item ${openFaq===i?"open":""}`}><button className="faq-q" onClick={() => setOpenFaq(openFaq===i?-1:i)}>{f.q}<ChevronDown size={18} className="faq-chevron"/></button><div className="faq-a"><p>{f.a}</p></div></div>)}</div></Reveal></section>
@@ -748,7 +814,7 @@ export default function App() {
 
       {blogPost && <div className="legal-overlay" onClick={() => setBlogPost(null)} role="dialog" aria-modal="true" aria-label={blogPost.title}><div className="legal-modal blog-modal" onClick={e => e.stopPropagation()}><div className="legal-head"><div><span className="blog-tag">{blogPost.tag}</span><h3 style={{marginTop:6}}>{blogPost.title}</h3></div><button className="icon-btn" onClick={() => setBlogPost(null)} aria-label="Close"><X size={20}/></button></div><div className="legal-body"><div className="legal-updated">{blogPost.readTime} · Aqua Dreamland</div>{blogPost.body.map((b,i) => <div className="legal-block" key={i}><h4>{b.h}</h4><p>{b.p}</p></div>)}<div className="blog-cta"><MessageCircle size={16}/> Got a specific question? <a href="https://wa.me/917015280545" target="_blank" rel="noopener noreferrer">Ask us on WhatsApp</a></div></div></div></div>}
 
-      {quickView && <div className="overlay qv-overlay" onClick={closeQuickView} role="dialog" aria-modal="true" aria-label={quickView.name}><div className="qv-modal" onClick={e => e.stopPropagation()}><button className="icon-btn qv-close" onClick={closeQuickView} aria-label="Close"><X size={20}/></button><div className="qv-scroll"><div className="qv-top"><div className="qv-art"><ProductArt cat={quickView.cat}/></div><div className="qv-info">{quickView.badge && <span className="product-badge">{quickView.badge}</span>}<h3 className="qv-name">{quickView.name}</h3><div className="rating">{[...Array(5)].map((_, i) => <Star key={i} size={13} fill={i < Math.round(ratingFor(quickView.id).stars) ? "#f5b400" : "none"} strokeWidth={1.5}/>)}<span>{ratingFor(quickView.id).stars.toFixed(1)} ({ratingFor(quickView.id).count})</span></div><p className="qv-note">{quickView.note}</p><div className="qv-price">{priceLabel(quickView)}</div>{quickView.stock && <span className={`stock-badge qv-stock ${quickView.stock}`}>{quickView.stock === "in-stock" ? "In Stock" : "Made to Order"}</span>}</div></div>{relatedFor(quickView).length > 0 && <div className="qv-related"><div className="qv-related-label">You may also like</div><div className="qv-related-strip">{relatedFor(quickView).map(rp => <div key={rp.id} className="rel-card" onClick={() => setQuickView(rp)} onKeyDown={onActivateKey(() => setQuickView(rp))} role="button" tabIndex={0} aria-label={`View ${rp.name}`}><div className="rel-art"><ProductArt cat={rp.cat} compact/></div><div className="rel-body"><div className="rel-name">{rp.name}</div><div className="rel-price">{priceLabel(rp)}</div></div></div>)}</div></div>}</div><div className="qv-bar"><div className="qv-bar-price"><span className="p1">Price</span><span className="p2">{priceLabel(quickView)}</span></div>{cart[quickView.id] ? <div className="qty"><button onClick={() => changeQty(quickView.id,-1)}><Minus size={12}/></button><span>{cart[quickView.id]}</span><button onClick={() => changeQty(quickView.id,1)}><Plus size={12}/></button></div> : <button className="primary qv-add" onClick={() => addToCart(quickView.id)}><ShoppingCart size={15}/> Add to Cart</button>}</div></div></div>}
+      {quickView && <div className="overlay qv-overlay" onClick={closeQuickView} role="dialog" aria-modal="true" aria-label={quickView.name}><div className="qv-modal" onClick={e => e.stopPropagation()}><button className="icon-btn qv-close" onClick={closeQuickView} aria-label="Close"><X size={20}/></button><div className="qv-scroll"><div className="qv-top"><div className="qv-art"><ProductArt cat={quickView.cat}/></div><div className="qv-info">{quickView.badge && <span className="product-badge">{quickView.badge}</span>}<h3 className="qv-name">{quickView.name}</h3><div className="rating">{[...Array(5)].map((_, i) => <Star key={i} size={13} fill={i < Math.round(ratingFor(quickView.id).stars) ? "#f5b400" : "none"} strokeWidth={1.5}/>)}<span>{ratingFor(quickView.id).stars.toFixed(1)} ({ratingFor(quickView.id).count})</span></div><p className="qv-note">{quickView.note}</p><div className="qv-price">{priceLabel(quickView)}</div>{quickView.stock && <span className={`stock-badge qv-stock ${quickView.stock}`}>{quickView.stock === "in-stock" ? "In Stock" : "Made to Order"}</span>}</div></div>{relatedFor(quickView).length > 0 && <div className="qv-related"><div className="qv-related-label">You may also like</div><div className="qv-related-strip">{relatedFor(quickView).map(rp => <div key={rp.id} className="rel-card" onClick={() => openQuickView(rp)} onKeyDown={onActivateKey(() => openQuickView(rp))} role="button" tabIndex={0} aria-label={`View ${rp.name}`}><div className="rel-art"><ProductArt cat={rp.cat} compact/></div><div className="rel-body"><div className="rel-name">{rp.name}</div><div className="rel-price">{priceLabel(rp)}</div></div></div>)}</div></div>}</div><div className="qv-bar"><div className="qv-bar-price"><span className="p1">Price</span><span className="p2">{priceLabel(quickView)}</span></div>{cart[quickView.id] ? <div className="qty"><button onClick={() => changeQty(quickView.id,-1)}><Minus size={12}/></button><span>{cart[quickView.id]}</span><button onClick={() => changeQty(quickView.id,1)}><Plus size={12}/></button></div> : <button className="primary qv-add" onClick={() => addToCart(quickView.id)}><ShoppingCart size={15}/> Add to Cart</button>}</div></div></div>}
 
       {lightbox !== null && <div className="overlay lb-overlay" onClick={() => setLightbox(null)} role="dialog" aria-modal="true" aria-label={GALLERY_IMAGES[lightbox].alt}><button className="icon-btn lb-close" onClick={() => setLightbox(null)} aria-label="Close"><X size={22}/></button><button className="icon-btn lb-nav lb-prev" onClick={e => {e.stopPropagation();setLightbox(i => (i - 1 + GALLERY_IMAGES.length) % GALLERY_IMAGES.length)}} aria-label="Previous image"><ChevronRight size={22} style={{transform:"rotate(180deg)"}}/></button><img className="lb-img" src={GALLERY_IMAGES[lightbox].src} alt={GALLERY_IMAGES[lightbox].alt} onClick={e => e.stopPropagation()} /><button className="icon-btn lb-nav lb-next" onClick={e => {e.stopPropagation();setLightbox(i => (i + 1) % GALLERY_IMAGES.length)}} aria-label="Next image"><ChevronRight size={22}/></button><div className="lb-count">{lightbox + 1} / {GALLERY_IMAGES.length}</div></div>}
 
